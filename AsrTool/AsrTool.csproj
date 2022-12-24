@@ -1,0 +1,149 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+	<PropertyGroup>
+		<GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+	</PropertyGroup>
+
+
+	<ItemGroup>
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+		<PackageReference Include="Dapper" Version="2.0.123" />
+		<PackageReference Include="Hangfire.SqlServer" Version="1.7.28" />
+		<PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
+		<PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="6.0.2" />
+		<PackageReference Include="AutoMapper" Version="11.0.1" />
+		<PackageReference Include="EFCore.BulkExtensions" Version="6.4.1" />
+		<PackageReference Include="FluentValidation" Version="10.3.6" />
+		<PackageReference Include="Hangfire.AspNetCore" Version="1.7.28" />
+		<PackageReference Include="MediatR" Version="10.0.1" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.2" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.2">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="NLog" Version="4.7.14" />
+		<PackageReference Include="Novell.Directory.Ldap.NETStandard" Version="3.6.0" />
+		<PackageReference Include="Serilog.AspNetCore" Version="5.0.0" />
+		<PackageReference Include="Serilog.Enrichers.Thread" Version="3.1.0" />
+		<PackageReference Include="Serilog.Expressions" Version="3.3.0" />
+		<PackageReference Include="TimeZoneConverter" Version="5.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Remove="Infrastructure\Helpers\wg0gqs34.4f5~" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="Infrastructure\Domain\Projections\" />
+		<Folder Include="Infrastructure\MediatR\Businesses\Transaction\Queries\" />
+		<Folder Include="Migrations\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="ClientApp\src\app\API\models\accountDto.ts">
+	    <CustomToolNamespace>Dtos\AccountDto.cs</CustomToolNamespace>
+	  </None>
+	  <None Update="ClientApp\src\app\Api\models\appLanguage.ts">
+	    <CustomToolNamespace>Infrastructure\Domain\Enums\AppLanguage.cs</CustomToolNamespace>
+	  </None>
+	  <None Update="ClientApp\src\app\Api\models\applicationEnvironment.ts">
+	    <CustomToolNamespace>Infrastructure\Domain\Enums\ApplicationEnvironment.cs</CustomToolNamespace>
+	  </None>
+	  <None Update="ClientApp\src\app\API\models\assignUsersToRoleRequestDto.ts">
+	    <CustomToolNamespace>Dtos\UserRoleDtos\AssignUsersToRoleRequestDto.cs</CustomToolNamespace>
+	  </None>
+	  <None Update="ClientApp\src\app\API\models\baseExcludeFilterDto.ts">
+	    <CustomToolNamespace>Dtos\BaseExcludeFilterDto.cs</CustomToolNamespace>
+	  </None>
+	  <None Update="ClientApp\src\app\Api\models\dataSourceRequestDto.ts">
+	    <CustomToolNamespace>Dtos\DataSourceRequestDto.cs</CustomToolNamespace>
+	  </None>
+	  <None Update="ClientApp\src\app\Api\models\dataSourceRequestFilterDto.ts">
+	    <CustomToolNamespace>Dtos\DataSourceRequestFilterDto.cs</CustomToolNamespace>
+	  </None>
+	  <None Update="ClientApp\src\app\Api\models\dataSourceResultDto.ts">
+	    <CustomToolNamespace>Dtos\DataSourceResultDto.cs</CustomToolNamespace>
+	  </None>
+	  <None Update="ClientApp\src\app\Api\models\gender.ts">
+	    <CustomToolNamespace>Infrastructure\Domain\Enums\Gender.cs</CustomToolNamespace>
+	  </None>
+	  <None Update="ClientApp\src\app\API\models\getUsersByRolesFilterDto.ts">
+	    <CustomToolNamespace>Dtos\UserRoleDtos\GetUsersByRolesFilterDto.cs</CustomToolNamespace>
+	  </None>
+	  <None Update="ClientApp\src\app\Api\models\jobSendMailSetting.ts">
+	    <CustomToolNamespace>Infrastructure\Domain\Enums\JobSendMailSetting.cs</CustomToolNamespace>
+	  </None>
+	  <None Update="ClientApp\src\app\Api\models\loginRequestDto.ts">
+	    <CustomToolNamespace>Dtos\LoginRequestDto.cs</CustomToolNamespace>
+	  </None>
+	  <None Update="ClientApp\src\app\API\models\makeTransactionDto.ts">
+	    <CustomToolNamespace>Dtos\MakeTransactionDto.cs</CustomToolNamespace>
+	  </None>
+	  <None Update="ClientApp\src\app\API\models\resetRolesRequestDto.ts">
+	    <CustomToolNamespace>Dtos\UserRoleDtos\ResetRolesRequestDto.cs</CustomToolNamespace>
+	  </None>
+	  <None Update="ClientApp\src\app\Api\models\right.ts">
+	    <CustomToolNamespace>Infrastructure\Domain\Enums\Right.cs</CustomToolNamespace>
+	  </None>
+	  <None Update="ClientApp\src\app\Api\models\roleDto.ts">
+	    <CustomToolNamespace>Dtos\RoleDto.cs</CustomToolNamespace>
+	  </None>
+	  <None Update="ClientApp\src\app\API\models\searchUsersByTermFilterDto.ts">
+	    <CustomToolNamespace>Dtos\UserRoleDtos\SearchUsersByTermFilterDto.cs</CustomToolNamespace>
+	  </None>
+	  <None Update="ClientApp\src\app\API\models\somethingDto.ts">
+	    <CustomToolNamespace>Dtos\SomethingDto.cs</CustomToolNamespace>
+	  </None>
+	  <None Update="ClientApp\src\app\Api\models\sortFieldDto.ts">
+	    <CustomToolNamespace>Dtos\SortFieldDto.cs</CustomToolNamespace>
+	  </None>
+	  <None Update="ClientApp\src\app\Api\models\sortOrder.ts">
+	    <CustomToolNamespace>Infrastructure\Domain\Enums\SortOrder.cs</CustomToolNamespace>
+	  </None>
+	  <None Update="ClientApp\src\app\API\models\transactionDto.ts">
+	    <CustomToolNamespace>Dtos\TransactionDto.cs</CustomToolNamespace>
+	  </None>
+	  <None Update="ClientApp\src\app\API\models\userByRoleDto.ts">
+	    <CustomToolNamespace>Dtos\UserRoleDtos\UserByRoleDto.cs</CustomToolNamespace>
+	  </None>
+	  <None Update="ClientApp\src\app\Api\models\userDto.ts">
+	    <CustomToolNamespace>Dtos\UserDto.cs</CustomToolNamespace>
+	  </None>
+	  <None Update="ClientApp\src\app\API\models\userRefDto.ts">
+	    <CustomToolNamespace>Dtos\UserRoleDtos\UserRefDto.cs</CustomToolNamespace>
+	  </None>
+	  <None Update="ClientApp\src\app\Api\models\weatherForecast.ts">
+	    <CustomToolNamespace>Dtos\WeatherForecast.cs</CustomToolNamespace>
+	  </None>
+	  <None Update="ClientApp\src\app\API\services\accountApiProxy.ts">
+	    <CustomToolNamespace>Controllers\AccountController.cs</CustomToolNamespace>
+	  </None>
+	  <None Update="ClientApp\src\app\API\services\adminApiProxy.ts">
+	    <CustomToolNamespace>Controllers\AdminController.cs</CustomToolNamespace>
+	  </None>
+	  <None Update="ClientApp\src\app\Api\services\authApiProxy.ts">
+	    <CustomToolNamespace>Controllers\AuthController.cs</CustomToolNamespace>
+	  </None>
+	  <None Update="ClientApp\src\app\Api\services\baseApiApiProxy.ts">
+	    <CustomToolNamespace>Controllers\BaseApiController.cs</CustomToolNamespace>
+	  </None>
+	  <None Update="ClientApp\src\app\API\services\referenceDataApiProxy.ts">
+	    <CustomToolNamespace>Controllers\ReferenceDataController.cs</CustomToolNamespace>
+	  </None>
+	  <None Update="ClientApp\src\app\Api\services\roleApiProxy.ts">
+	    <CustomToolNamespace>Controllers\RoleController.cs</CustomToolNamespace>
+	  </None>
+	  <None Update="ClientApp\src\app\Api\services\weatherForecastApiProxy.ts">
+	    <CustomToolNamespace>Controllers\WeatherForecastController.cs</CustomToolNamespace>
+	  </None>
+	</ItemGroup>
+
+</Project>
