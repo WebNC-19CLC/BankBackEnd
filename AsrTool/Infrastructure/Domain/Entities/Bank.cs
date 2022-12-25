@@ -2,7 +2,7 @@
 
 namespace AsrTool.Infrastructure.Domain.Entities
 {
-  public class BankAccount : IIdentity, IVersioning, IAuditing
+  public class Bank : IIdentity, IVersioning, IAuditing
   {
     public int Id { get; set; }
 
@@ -16,10 +16,12 @@ namespace AsrTool.Infrastructure.Domain.Entities
 
     public string ModifiedBy { get; set; } = default!;
 
-    public string AccountNumber { get; set; } 
+    public string Name { get; set; }
 
-    public int Status { get; set; }
+    public string API { get; set; }
 
-    public double Balance { get; set; }
+    public string PublicKey { get; set; }
+
+    public string PrivateKey { get; set; } 
   }
 }

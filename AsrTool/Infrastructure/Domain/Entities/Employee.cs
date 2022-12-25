@@ -74,6 +74,14 @@ namespace AsrTool.Infrastructure.Domain.Entities
 
     public string? TimeZoneId { get; set; }
 
+    public string? IdentityNumber { get; set; }
+
+    public string? Phone { get; set; }
+
+    public int? BankAccountId { get; set; }
+
+    public BankAccount? BankAccount { get; set; }
+
     [NotMapped]
     public string FullName => $"{FirstName} {LastName}";
   }

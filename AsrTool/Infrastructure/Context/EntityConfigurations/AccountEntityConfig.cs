@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AsrTool.Infrastructure.Context.EntityConfigurations
 {
-  public class AccountEntityConfig : IEntityTypeConfiguration<Account>
+  public class AccountEntityConfig : IEntityTypeConfiguration<BankAccount>
   {
-    public void Configure(EntityTypeBuilder<Account> builder)
+    public void Configure(EntityTypeBuilder<BankAccount> builder)
     {
       builder.HasIndex(x => x.AccountNumber).IsUnique();
     }

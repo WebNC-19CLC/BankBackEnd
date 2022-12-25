@@ -155,6 +155,9 @@ namespace AsrTool.Infrastructure.Auth
         FirstName = model.FirstName,
         Active = true,
         Gender = Domain.Enums.Gender.Male,
+        Phone = model.Phone,
+        Site = model.Address,
+        IdentityNumber = model.IndentityNumber
       };
 
       await _context.AddAsync(newUser);

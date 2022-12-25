@@ -18,13 +18,13 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
 
     public async Task<Unit> Handle(MakeTransactionCommand request, CancellationToken cancellationToken)
     {
-      var from  =await _asrContext.Get<Domain.Entities.Account>().SingleOrDefaultAsync(x => x.AccountNumber == request.MakeTransactionDto.From);
+      var from  =await _asrContext.Get<Domain.Entities.BankAccount>().SingleOrDefaultAsync(x => x.AccountNumber == request.MakeTransactionDto.From);
 
       if (from == null) {
         throw new NotFoundException();
       }
 
-      var to  = await _asrContext.Get<Domain.Entities.Account>().SingleOrDefaultAsync(x => x.AccountNumber == request.MakeTransactionDto.To);
+      var to  = await _asrContext.Get<Domain.Entities.BankAccount>().SingleOrDefaultAsync(x => x.AccountNumber == request.MakeTransactionDto.To);
      
       if (to == null)
       {

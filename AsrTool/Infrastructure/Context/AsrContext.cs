@@ -31,10 +31,15 @@ namespace AsrTool.Infrastructure.Context
 
     protected DbSet<Role> Roles { get; set; } = default!;
 
-    protected DbSet<Account> Accounts { get; set; } = default!;
+    protected DbSet<BankAccount> BankAccounts { get; set; } = default!;
 
     protected DbSet<Transaction> Transactions { get; set; } = default!;
 
+    protected DbSet<Debit> Debits { get; set; } = default!;
+
+    protected DbSet<Recipient> Recipients { get; set; }
+
+    protected DbSet<Bank> Banks { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

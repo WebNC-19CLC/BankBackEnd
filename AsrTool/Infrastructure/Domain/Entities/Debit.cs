@@ -2,7 +2,7 @@
 
 namespace AsrTool.Infrastructure.Domain.Entities
 {
-  public class Transaction : IVersioning, IAuditing, IIdentity
+  public class Debit : IIdentity, IVersioning, IAuditing
   {
     public int Id { get; set; }
 
@@ -24,18 +24,14 @@ namespace AsrTool.Infrastructure.Domain.Entities
 
     public BankAccount? To { get; set; }
 
-    public double Amount { get; set; }
-
-    public string Type { get; set; }
-
-    public string Description { get; set; }
-
-    public bool Status { get; set; } = false;
-
     public string? ToAccountNumber { get; set; }
 
     public int? BankDestinationId { get; set; }
 
     public Bank? BankDestination { get; set; }
+
+    public double Amount { get; set; }
+
+    public string Description { get; set; }
   }
 }

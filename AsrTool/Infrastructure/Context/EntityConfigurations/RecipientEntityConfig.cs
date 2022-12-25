@@ -5,12 +5,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AsrTool.Infrastructure.Context.EntityConfigurations
 {
-  public class TransactionConfig : IEntityTypeConfiguration<Transaction>
+  public class RecipientEntityConfig : IEntityTypeConfiguration<Recipient>
   {
-    public void Configure(EntityTypeBuilder<Transaction> builder)
+    public void Configure(EntityTypeBuilder<Recipient> builder)
     {
-      builder.HasOne(x => x.From).WithMany().HasForeignKey(x => x.FromId).OnDelete(DeleteBehavior.ClientSetNull);
-      builder.HasOne(x => x.To).WithMany().HasForeignKey(x => x.ToId).OnDelete(DeleteBehavior.ClientSetNull);
+      builder.HasIndex(x => x.AccountNumber).IsUnique();
       builder.HasOne(x => x.BankDestination).WithMany().HasForeignKey(x => x.BankDestinationId).OnDelete(DeleteBehavior.ClientSetNull);
     }
   }

@@ -21,12 +21,16 @@ namespace AsrTool.Infrastructure.Context.EntityConfigurations
       builder.Property(x => x.OrganizationUnit).HasUnicodeTextColumn(256);
       builder.Property(x => x.Department).HasUnicodeTextColumn(256);
       builder.HasIndex(x => x.Username).IsUnique();
+      builder.HasIndex(x => x.IdentityNumber).IsUnique();
+      builder.HasIndex(x => x.Phone).IsUnique();
       builder.Property(x => x.Username).HasAsciiColumn(128).IsRequired();
       builder.Property(x => x.Site).HasUnicodeTextColumn(256);
       builder.Property(x => x.TechnicalRole).HasUnicodeTextColumn(256);
       builder.Property(x => x.LegalUnit).HasUnicodeTextColumn(256);
       builder.Property(x => x.TimeZoneId).IsRequired().HasDefaultValue(Constants.TimeZoneId.DEFAULT);
       builder.HasOne(x => x.Supervisor).WithMany().HasForeignKey(x => x.SupervisorId).OnDelete(DeleteBehavior.ClientSetNull);
+      builder.HasOne(x => x.BankAccount).WithMany().HasForeignKey(x => x.BankAccountId).OnDelete(DeleteBehavior.ClientSetNull);
+      builder.HasIndex(x => x.BankAccountId).IsUnique();
     }
   }
 }
