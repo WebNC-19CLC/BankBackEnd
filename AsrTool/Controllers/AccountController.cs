@@ -20,6 +20,8 @@ namespace AsrTool.Controllers
       return await Mediator.Send(new GetAccountsQuery());
     }
 
+
+
     [HttpGet("{id}/transaction")]
     public async Task<List<TransactionDto>> Get([FromRoute] int id)
     {

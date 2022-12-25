@@ -2,7 +2,7 @@
 
 namespace AsrTool.Infrastructure.Domain.Entities
 {
-  public class BankAccount : IIdentity, IVersioning, IAuditing
+  public class OTP : IIdentity, IVersioning, IAuditing
   {
     public int Id { get; set; }
 
@@ -16,14 +16,9 @@ namespace AsrTool.Infrastructure.Domain.Entities
 
     public string ModifiedBy { get; set; } = default!;
 
-    public string AccountNumber { get; set; } 
+    public string Code { get; set; }
 
-    public int Status { get; set; }
+    public string Type { get; set; } = default!;
 
-    public double Balance { get; set; }
-
-    public ICollection<Recipient> Recipients { get; set; } = new HashSet<Recipient>();
-
-    public ICollection<OTP> OTPS { get; set; } = new HashSet<OTP>();
   }
 }
