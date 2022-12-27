@@ -196,6 +196,8 @@ static CookieAuthenticationOptions ApplyCookieOption(CookieAuthenticationOptions
   options.SlidingExpiration = true;
   options.ExpireTimeSpan = TimeSpan.FromMinutes(360);
   options.Cookie.SameSite = SameSiteMode.None;
+  options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+
   options.Events = new CookieAuthenticationEvents
   {
     OnRedirectToLogin = context =>
