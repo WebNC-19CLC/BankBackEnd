@@ -36,6 +36,10 @@ namespace AsrTool.Infrastructure.Domain.Entities
 
     public int? BankDestinationId { get; set; }
 
+    public bool ChargeReceiver { get; set; } = false;
+
+    public double? TransactionFee { get; set; }
+
     public Bank? BankDestination { get; set; }
   }
 }

@@ -26,7 +26,7 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Queries
     {
       var currentUser = await _context.Get<Employee>().Include(x => x.BankAccount).ThenInclude(x => x.Recipients).SingleOrDefaultAsync(x => x.Id == _userResolver.CurrentUser.Id);
 
-      if (currentUser == null || currentUser.BankAccount == null) {
+      if (currentUser == null) {
         throw new NotFoundException<BankAccount>(_userResolver.CurrentUser.Id);
       }
 
@@ -35,7 +35,7 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Queries
       var result = new AccountDto
       {
         FullName = currentUser.FullName,
-        AccountNumber = bankAccount.AccountNumber,
+        AccountNumber = bankAccount?.AccountNumber,
         Balance = bankAccount.Balance,
         Email = currentUser.Email,
         Role = currentUser.Role.Name,

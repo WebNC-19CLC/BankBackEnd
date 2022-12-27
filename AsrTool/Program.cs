@@ -198,6 +198,7 @@ static CookieAuthenticationOptions ApplyCookieOption(CookieAuthenticationOptions
   options.Cookie.SameSite = SameSiteMode.None;
   options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
   options.Cookie.MaxAge = TimeSpan.FromMinutes(360);
+  options.Cookie.Domain = "https://bankmaia.herokuapp.com";
 
   options.Events = new CookieAuthenticationEvents
   {

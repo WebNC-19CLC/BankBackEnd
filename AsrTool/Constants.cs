@@ -11,7 +11,10 @@
       public const string PLACEHOLDER_VARIABLE = "$";
       public const string DATETIME_FORMAT_FOR_FILENAME = "yyyyMMdd - HHmmss";
     }
-
+    public struct Fee {
+      public const double TransactionFee = 1;
+      
+    }
     public struct Languages
     {
       public const string DE = "DE";

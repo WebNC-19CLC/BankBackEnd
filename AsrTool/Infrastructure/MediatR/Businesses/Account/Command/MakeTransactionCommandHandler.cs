@@ -38,8 +38,18 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
         throw new Exception("Not enough balance");
       }
 
-      from.Balance = from.Balance - request.MakeTransactionDto.Amount;
-      to.Balance = from.Balance + request.MakeTransactionDto.Amount;
+      if (request.MakeTransactionDto.ChargeReceiver)
+      {
+        from.Balance = from.Balance - request.MakeTransactionDto.Amount;
+        to.Balance = from.Balance + request.MakeTransactionDto.Amount - Constants.Fee.TransactionFee;
+
+      }
+      else {
+        from.Balance = from.Balance - request.MakeTransactionDto.Amount - Constants.Fee.TransactionFee;
+        to.Balance = from.Balance + request.MakeTransactionDto.Amount ;
+
+      }
+     
       await _asrContext.UpdateAsync(from);
       await _asrContext.UpdateAsync(to);
 
@@ -49,7 +59,9 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
         ToId = to.Id,
         Amount = request.MakeTransactionDto.Amount,
         Type = "Transaction",
-        Description = $"Account {_userResolver.CurrentUser.FullName} transfer {request.MakeTransactionDto.Amount} units"
+        Description = $"Account {_userResolver.CurrentUser.FullName} transfer {request.MakeTransactionDto.Amount} units",
+        ChargeReceiver = request.MakeTransactionDto.ChargeReceiver,
+        TransactionFee = Constants.Fee.TransactionFee
       };
 
       await _asrContext.AddRangeAsync(trans);
