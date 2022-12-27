@@ -20,8 +20,8 @@ namespace AsrTool.Infrastructure.Domain.Entities
 
     public string SuggestedName { get; set; }
 
-    public int BankDestinationId { get; set; }
+    public int? BankDestinationId { get; set; }
 
-    public Bank BankDestination { get; set; }
+    public Bank? BankDestination { get; set; }
   }
 }

@@ -1,4 +1,5 @@
 ﻿using AsrTool.Dtos;
+using AsrTool.Infrastructure.Auth;
 using AsrTool.Infrastructure.Context;
 using AsrTool.Infrastructure.Domain.Entities;
 using AsrTool.Infrastructure.Exceptions;
@@ -10,10 +11,12 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
   public class MakeTransactionCommandHandler : IRequestHandler<MakeTransactionCommand>
   {
     private readonly IAsrContext _asrContext;
+    private readonly IUserResolver _userResolver;
 
-    public MakeTransactionCommandHandler(IAsrContext asrContext)
+    public MakeTransactionCommandHandler(IAsrContext asrContext, IUserResolver userResolver)
     {
       _asrContext = asrContext;
+      _userResolver = userResolver;
     }
 
     public async Task<Unit> Handle(MakeTransactionCommand request, CancellationToken cancellationToken)
@@ -23,7 +26,7 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
       if (from == null) {
         throw new NotFoundException();
       }
-
+  
       var to  = await _asrContext.Get<Domain.Entities.BankAccount>().SingleOrDefaultAsync(x => x.AccountNumber == request.MakeTransactionDto.To);
      
       if (to == null)
@@ -32,7 +35,7 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
       }
 
       if (request.MakeTransactionDto.Amount > from.Balance) {
-        throw new Exception("Not valid balance");
+        throw new Exception("Not enough balance");
       }
 
       from.Balance = from.Balance - request.MakeTransactionDto.Amount;
@@ -45,6 +48,8 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
         FromId = from.Id,
         ToId = to.Id,
         Amount = request.MakeTransactionDto.Amount,
+        Type = "Transaction",
+        Description = $"Account {_userResolver.CurrentUser.FullName} transfer {request.MakeTransactionDto.Amount} units"
       };
 
       await _asrContext.AddRangeAsync(trans);

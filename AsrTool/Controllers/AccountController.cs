@@ -16,20 +16,31 @@ namespace AsrTool.Controllers
     }
 
     [HttpGet]
-    public async Task<List<AccountDto>> GetAccounts() {
+    public async Task<List<AccountDto>> GetAccounts()
+    {
       return await Mediator.Send(new GetAccountsQuery());
     }
 
 
 
     [HttpGet("{id}/transaction")]
-    public async Task<List<TransactionDto>> Get([FromRoute] int id)
+    public async Task<List<TransactionDto>> GetTransaction([FromRoute] int id)
     {
       return await Mediator.Send(new GetTransactionQuery() { AccountId = id });
     }
 
+    [HttpGet("me")]
+    public async Task<AccountDto> GetCurrentAccount()
+    {
+      return await Mediator.Send(new GetCurrentAccountQuery()
+      {
+
+      });
+    }
+
     [HttpPost("make-transaction")]
-    public async Task MakeTransaction([FromBody] MakeTransactionDto dto) {
+    public async Task MakeTransaction([FromBody] MakeTransactionDto dto)
+    {
       await Mediator.Send(new MakeTransactionCommand() { MakeTransactionDto = dto });
     }
   }

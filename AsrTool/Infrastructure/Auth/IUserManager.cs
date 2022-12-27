@@ -8,6 +8,8 @@ namespace AsrTool.Infrastructure.Auth
 
     Task Register(HttpContext httpContext, RegisterRequestDto model);
 
+    Task RegisterAdmin(HttpContext httpContext, RegisterRequestDto model);
+
     Task SignOut(HttpContext httpContext);
 
     Task GrantPermissions(HttpContext httpContext);

@@ -18,8 +18,6 @@ namespace AsrTool.Infrastructure.Domain.Entities
 
     public string AccountNumber { get; set; } 
 
-    public int Status { get; set; }
-
     public double Balance { get; set; }
 
     public ICollection<Recipient> Recipients { get; set; } = new HashSet<Recipient>();

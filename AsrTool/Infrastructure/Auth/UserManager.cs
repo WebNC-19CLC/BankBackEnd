@@ -145,6 +145,8 @@ namespace AsrTool.Infrastructure.Auth
         throw new Exception("Username is already existed");
       }
 
+      var userRole = await _context.Get<Role>().SingleOrDefaultAsync(x => x.Name == Constants.Roles.User);
+
       var newUser = new Employee
       {
         Username = model.Username,
@@ -157,7 +159,48 @@ namespace AsrTool.Infrastructure.Auth
         Gender = Domain.Enums.Gender.Male,
         Phone = model.Phone,
         Site = model.Address,
-        IdentityNumber = model.IndentityNumber
+        RoleId  = userRole.Id,
+        IdentityNumber = model.IndentityNumber,
+        CreatedBy = "System",
+        CreatedOn = DateTime.UtcNow,
+        ModifiedBy = "System",
+        ModifiedOn = DateTime.UtcNow,
+      };
+
+      await _context.AddAsync(newUser);
+      await _context.SaveChangesAsync();
+
+      await SignIn(httpContext, model.Username, model.Password);
+    }
+
+    public async Task RegisterAdmin(HttpContext httpContext, RegisterRequestDto model)
+    {
+      var ifUserNameExist = await _context.Get<Employee>().AnyAsync(x => x.Username == model.Username);
+      if (ifUserNameExist)
+      {
+        throw new Exception("Username is already existed");
+      }
+
+      var adminRole = await _context.Get<Role>().SingleOrDefaultAsync(x => x.Name == Constants.Roles.Admin);
+
+      var newUser = new Employee
+      {
+        Username = model.Username,
+        Password = BC.HashPassword(model.Password),
+        Email = model.Email,
+        LastName = model.LastName,
+        Visa = model.Username,
+        FirstName = model.FirstName,
+        Active = true,
+        Gender = Domain.Enums.Gender.Male,
+        Phone = model.Phone,
+        Site = model.Address,
+        RoleId = adminRole.Id,
+        IdentityNumber = model.IndentityNumber,
+        CreatedBy = "System",
+        CreatedOn = DateTime.UtcNow,
+        ModifiedBy = "System",
+        ModifiedOn = DateTime.UtcNow,
       };
 
       await _context.AddAsync(newUser);

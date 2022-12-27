@@ -270,7 +270,7 @@ namespace AsrTool.Infrastructure.Context
         var entity = entityEntry.Entity;
         if (entityEntry.State == EntityState.Added)
         {
-          entity.CreatedBy = _userResolver.CurrentUser.Username;
+          entity.CreatedBy = _userResolver.CurrentUser.Username != null ? _userResolver.CurrentUser.Username : "SYSTEM";
           entity.CreatedOn = now;
           entity.ModifiedBy = entity.CreatedBy;
           entity.ModifiedOn = entity.CreatedOn;

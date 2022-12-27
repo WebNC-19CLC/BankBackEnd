@@ -25,7 +25,7 @@
 
     public struct Auth
     {
-      public const string DOMAIN = "ELCANET";
+      public const string DOMAIN = "";
       public const string CLAIM_NAME = "CLAIM:";
       public const string CLAIM_APP_NAME = "ASR_CLAIM";
       public const string RIGHT_SEPARATOR = ", ";
@@ -112,7 +112,7 @@
           public const string ORGANIZATION_UNIT = "SoftwareEngineering";
           public const string HEAD_UNIT_VISA = "HUN";
           public const string HEAD_OPERATION_VISA = "BGT";
-          public const string EMAIL = "khoa.ho@elca.vn";
+          public const string EMAIL = "khoa.ho@maia.vn";
           public const string SITE = "Ho Chi Minh";
           public const int EMPID = 22813;
           public const string SOCIAL_NUMBER = "000.000.000.000";
@@ -130,7 +130,7 @@
           public const string ORGANIZATION_UNIT = "SoftwareEngineering";
           public const string HEAD_UNIT_VISA = "HUN";
           public const string HEAD_OPERATION_VISA = "BGT";
-          public const string EMAIL = "phuoc.tran@elca.vn";
+          public const string EMAIL = "phuoc.tran@maia.vn";
           public const string SITE = "Ho Chi Minh";
           public const int EMPID = 21981;
           public const string SOCIAL_NUMBER = "000.000.000.100";
@@ -148,7 +148,7 @@
           public const string ORGANIZATION_UNIT = "SoftwareEngineering";
           public const string HEAD_UNIT_VISA = "HUN";
           public const string HEAD_OPERATION_VISA = "BGT";
-          public const string EMAIL = "thanh.nguyen@elca.vn";
+          public const string EMAIL = "thanh.nguyen@maia.vn";
           public const string SITE = "Ho Chi Minh";
           public const int EMPID = 23146;
           public const string SOCIAL_NUMBER = "000.000.000.200";
@@ -166,7 +166,7 @@
           public const string ORGANIZATION_UNIT = "SoftwareEngineering";
           public const string HEAD_UNIT_VISA = "HUN";
           public const string HEAD_OPERATION_VISA = "BGT";
-          public const string EMAIL = "anh.luu@elca.vn";
+          public const string EMAIL = "anh.luu@maia.vn";
           public const string SITE = "Ho Chi Minh";
           public const int EMPID = 22074;
           public const string SOCIAL_NUMBER = "000.000.000.300";
@@ -184,7 +184,7 @@
           public const string ORGANIZATION_UNIT = "SoftwareEngineering";
           public const string HEAD_UNIT_VISA = "HUN";
           public const string HEAD_OPERATION_VISA = "BGT";
-          public const string EMAIL = "anh.duongtrieu@elca.vn";
+          public const string EMAIL = "anh.duongtrieu@maia.vn";
           public const string SITE = "Ho Chi Minh";
           public const int EMPID = 23214;
           public const string SOCIAL_NUMBER = "000.000.000.400";
@@ -202,7 +202,7 @@
           public const string ORGANIZATION_UNIT = "SoftwareEngineering";
           public const string HEAD_UNIT_VISA = "HUN";
           public const string HEAD_OPERATION_VISA = "BGT";
-          public const string EMAIL = "vinh.nguyenhuu@elca.vn";
+          public const string EMAIL = "vinh.nguyenhuu@maia.vn";
           public const string SITE = "Ho Chi Minh";
           public const int EMPID = 23215;
           public const string SOCIAL_NUMBER = "000.000.000.500";
