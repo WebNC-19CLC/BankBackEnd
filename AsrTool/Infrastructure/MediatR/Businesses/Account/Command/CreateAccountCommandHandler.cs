@@ -25,6 +25,8 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
         throw new Exception("Username already exist");
       }
 
+      var role = await _asrContext.Get<Domain.Entities.Role>().SingleOrDefaultAsync(x => x.Name == Constants.Roles.User);
+
       var password = GetRandomNumber();
 
       var newUser = new Employee
@@ -35,6 +37,7 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
         LastName = request.Request.LastName,
         Visa = request.Request.Username,
         FirstName = request.Request.FirstName,
+        RoleId = role.Id,
         Active = true,
         Gender = Domain.Enums.Gender.Male,
         Phone = request.Request.Phone,
@@ -58,7 +61,8 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
         Username = newUser.Username,
         Password = password,
         AccountNumber = newUser.BankAccount.AccountNumber,
-        Email = newUser.Email
+        Email = newUser.Email,
+        Role = newUser.Role.Name
       };
 
       return result;

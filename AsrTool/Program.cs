@@ -121,6 +121,8 @@ app.UseStaticFiles();
 
 app.UseMiddleware<ExceptionMiddleware>();
 
+app.UseCors(DevAllowSpecificOrigins);
+
 app.UseAuthentication();
 app.UseMiddleware<CookieOnlyAuthenticationMiddleware>();
 

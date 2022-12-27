@@ -34,9 +34,11 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Queries
 
       var result = new AccountDto
       {
-        Owner = currentUser.FullName,
+        FullName = currentUser.FullName,
         AccountNumber = bankAccount.AccountNumber,
         Balance = bankAccount.Balance,
+        Email = currentUser.Email,
+        Role = currentUser.Role.Name,
         Id = bankAccount.Id,
         Recipients = _mapper.Map<ICollection<Recipient>, ICollection<RecipientDto>>(bankAccount.Recipients),
       };
