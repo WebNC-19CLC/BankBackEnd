@@ -6,7 +6,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AsrTool.Controllers
-{ 
+{
+  [Authorize]
   public class RoleController : BaseApiController
   {
     public RoleController(IMediator mediator) : base(mediator)

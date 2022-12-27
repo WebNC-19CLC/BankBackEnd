@@ -4,10 +4,12 @@ using AsrTool.Infrastructure.Domain.Enums;
 using AsrTool.Infrastructure.MediatR.Businesses.ReferenceData.Queries;
 using AsrTool.Infrastructure.MediatR.Businesses.User.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AsrTool.Controllers
 {
+  [Authorize]
   public class ReferenceDataController : BaseApiController
   {
 
