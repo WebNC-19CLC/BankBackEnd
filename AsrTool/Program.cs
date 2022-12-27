@@ -197,6 +197,7 @@ static CookieAuthenticationOptions ApplyCookieOption(CookieAuthenticationOptions
   options.ExpireTimeSpan = TimeSpan.FromMinutes(360);
   options.Cookie.SameSite = SameSiteMode.None;
   options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+  options.Cookie.MaxAge = TimeSpan.FromMinutes(360);
 
   options.Events = new CookieAuthenticationEvents
   {
