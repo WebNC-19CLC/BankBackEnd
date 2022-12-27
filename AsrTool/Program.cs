@@ -52,8 +52,6 @@ var appSettings = appSettingsSection.Get<AppSettings>();
 
 // SERVICES
 builder.Services.AddAuthorizers();
-builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestAuthorizationBehavior<,>));
-builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 builder.Services.AddMediatR(Assembly.GetAssembly(typeof(Program))!);
 
 builder.Services.AddHttpClient();
@@ -116,7 +114,6 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseMiddleware<ExceptionMiddleware>();

@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AsrTool.Controllers
 {
-  [Authorize]
   public class AuthController : BaseApiController
   {
     public AuthController(IMediator mediator) : base(mediator)

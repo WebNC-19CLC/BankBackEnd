@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AsrTool.Controllers
 {
-  [Authorize]
   public class AdminController : BaseApiController
   {
     public AdminController(IMediator mediator) : base(mediator)
