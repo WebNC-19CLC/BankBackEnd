@@ -70,7 +70,7 @@ builder.Services.AddCors(options =>
   options.AddPolicy(name: DevAllowSpecificOrigins,
     builder =>
     {
-      builder.WithOrigins("http://localhost:3000", "https://localhost:3000").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
+      builder.WithOrigins("http://localhost:3000", "https://localhost:3000", "https://wnc-final.vercel.app/").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
     });
 });
 

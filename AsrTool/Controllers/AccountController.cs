@@ -22,8 +22,6 @@ namespace AsrTool.Controllers
       return await Mediator.Send(new GetAccountsQuery());
     }
 
-
-
     [HttpGet("{id}/transaction")]
     public async Task<List<TransactionDto>> GetTransaction([FromRoute] int id)
     {
@@ -37,6 +35,11 @@ namespace AsrTool.Controllers
       {
 
       });
+    }
+
+    [HttpPost("get-recipient")]
+    public async Task<RecipientDto> GetRecipient([FromBody] GetRecipientRequestDto dto) {
+      return await Mediator.Send(new GetRecipientQuery() { Request = dto });
     }
 
     [HttpPost("make-transaction")]
