@@ -62,7 +62,7 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
         Password = password,
         AccountNumber = newUser.BankAccount.AccountNumber,
         Email = newUser.Email,
-        Role = newUser.Role.Name
+        Role = role.Name,
       };
 
       return result;

@@ -6,6 +6,6 @@
     public string To { get; set; }
     public double Amount { get; set; }
     public int? BankId { get; set; }
-    public bool ChargeReceiver { get; set; }
+    public bool ChargeReceiver { get; set; } = false;
   }
 }

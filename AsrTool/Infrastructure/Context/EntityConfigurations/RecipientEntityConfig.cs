@@ -9,7 +9,6 @@ namespace AsrTool.Infrastructure.Context.EntityConfigurations
   {
     public void Configure(EntityTypeBuilder<Recipient> builder)
     {
-      builder.HasIndex(x => x.AccountNumber).IsUnique();
       builder.HasOne(x => x.BankDestination).WithMany().HasForeignKey(x => x.BankDestinationId).OnDelete(DeleteBehavior.ClientSetNull);
     }
   }

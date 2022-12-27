@@ -42,6 +42,22 @@ namespace AsrTool.Controllers
       return await Mediator.Send(new GetRecipientQuery() { Request = dto });
     }
 
+    [HttpGet("me/my-recipients")]
+    public async Task<ICollection<RecipientDto>> GetMyRecipients() {
+      return await Mediator.Send(new GetMyRecipientsQuery());
+    }
+
+    [HttpPost("me/edit-my-recipient")]
+    public async Task<RecipientDto> EditMyRecipient([FromBody] RecipientDto editDto) {
+      return await Mediator.Send(new EditMyRecipientCommand() {Request = editDto });
+    }
+
+    [HttpPost("me/add-my-recipient")]
+    public async Task<RecipientDto> AddRecipient([FromBody] CreateRecipientDto dto)
+    {
+      return await Mediator.Send(new AddMyRecipientCommand() { Request = dto });
+    }
+
     [HttpPost("make-transaction")]
     public async Task MakeTransaction([FromBody] MakeTransactionDto dto)
     {
