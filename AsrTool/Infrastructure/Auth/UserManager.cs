@@ -59,23 +59,7 @@ namespace AsrTool.Infrastructure.Auth
           var claimPrincipal = CreatePrincipal(detail, authenticationScheme, false);
           var authProperties = new AuthenticationProperties
           {
-            // AllowRefresh = <bool>,
-            // Refreshing the authentication session should be allowed.
-            // ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
-            // The time at which the authentication ticket expires. A 
-            // value set here overrides the ExpireTimeSpan option of 
-            // CookieAuthenticationOptions set with AddCookie.
-            // IsPersistent = true,
-            // Whether the authentication session is persisted across 
-            // multiple requests. Required when setting the 
-            // ExpireTimeSpan option of CookieAuthenticationOptions 
-            // set with AddCookie. Also required when setting 
-            // ExpiresUtc.
-            // IssuedUtc = <DateTimeOffset>,
-            // The time at which the authentication ticket was issued.
-            // RedirectUri = "~/Account/Index"
-            // The full path or absolute URI to be used as an http 
-            // redirect response value.
+           
           };
 
           await httpContext.SignInAsync(authenticationScheme, claimPrincipal, authProperties);

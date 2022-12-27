@@ -57,6 +57,11 @@ builder.Services.AddMediatR(Assembly.GetAssembly(typeof(Program))!);
 builder.Services.AddHttpClient();
 builder.Services.AddControllersWithViews();
 
+builder.Services.Configure<CookiePolicyOptions>(options =>
+{
+  options.MinimumSameSitePolicy = SameSiteMode.None;
+});
+
 builder.Services.AddSwaggerGen();
 
 
@@ -65,7 +70,7 @@ builder.Services.AddCors(options =>
   options.AddPolicy(name: DevAllowSpecificOrigins,
     builder =>
     {
-      builder.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
+      builder.WithOrigins("http://localhost:3000", "https://localhost:3000").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
     });
 });
 
@@ -124,6 +129,8 @@ app.UseAuthentication();
 app.UseMiddleware<CookieOnlyAuthenticationMiddleware>();
 
 app.UseRouting();
+
+app.UseCookiePolicy();
 
 app.UseAuthorization();
 
@@ -188,6 +195,7 @@ static CookieAuthenticationOptions ApplyCookieOption(CookieAuthenticationOptions
   options.Cookie.Name = "AsrTool.Auth";
   options.SlidingExpiration = true;
   options.ExpireTimeSpan = TimeSpan.FromMinutes(360);
+  options.Cookie.SameSite = SameSiteMode.None;
   options.Events = new CookieAuthenticationEvents
   {
     OnRedirectToLogin = context =>
