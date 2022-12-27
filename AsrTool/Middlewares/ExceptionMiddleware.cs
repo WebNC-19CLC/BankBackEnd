@@ -41,6 +41,11 @@ namespace AsrTool.Middlewares
           message = "concurrentUpdate";
           break;
 
+        case UnauthorizerException:
+          context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+          message = exception.Message;
+          break;
+
         case NotFoundException:
           context.Response.StatusCode = (int)HttpStatusCode.NotFound;
           break;

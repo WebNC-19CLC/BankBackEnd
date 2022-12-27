@@ -11,6 +11,7 @@ using Microsoft.Extensions.Options;
 using AsrTool.Dtos;
 using AsrTool.Infrastructure.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using AsrTool.Infrastructure.Exceptions;
 
 namespace AsrTool.Infrastructure.Auth
 {
@@ -40,13 +41,13 @@ namespace AsrTool.Infrastructure.Auth
         var user = await _context.Get<Employee>().SingleOrDefaultAsync(x => x.Username == username);
         
         if (user == null) {
-          throw new Exception("Username is not correct");  
+          throw new UnauthorizerException("Username is not correct");  
         }
 
         bool matchPassword = BC.Verify(password, user.Password);
 
         if (!matchPassword) {
-          throw new Exception("Password is not correct");
+          throw new UnauthorizerException("Password is not correct");
         }
 
         if (matchPassword)
