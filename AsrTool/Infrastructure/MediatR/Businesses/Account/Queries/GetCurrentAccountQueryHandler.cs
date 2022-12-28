@@ -36,11 +36,11 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Queries
       {
         FullName = currentUser.FullName,
         AccountNumber = bankAccount?.AccountNumber,
-        Balance = bankAccount.Balance,
+        Balance = bankAccount?.Balance,
         Email = currentUser.Email,
         Role = currentUser.Role.Name,
-        Id = bankAccount.Id,
-        Recipients = _mapper.Map<ICollection<Recipient>, ICollection<RecipientDto>>(bankAccount.Recipients),
+        BankAccountId = bankAccount?.Id,
+        Recipients = bankAccount != null ? _mapper.Map<ICollection<Recipient>, ICollection<RecipientDto>>(bankAccount.Recipients) : new List<RecipientDto>(),
       };
 
       return result;

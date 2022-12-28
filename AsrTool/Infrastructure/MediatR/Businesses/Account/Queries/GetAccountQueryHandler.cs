@@ -19,7 +19,7 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Queries
       var users = _asrContext.Get<Domain.Entities.Employee>().Include(x => x.Role).Include(x => x.BankAccount).Where(x => x.BankAccountId != null);
       return await users.Select(x => new AccountDto
       {
-        Id = x.BankAccount.Id,
+        BankAccountId = x.BankAccount.Id,
         IsActive = x.Active,
         AccountNumber = x.BankAccount.AccountNumber,
         Email = x.Email,

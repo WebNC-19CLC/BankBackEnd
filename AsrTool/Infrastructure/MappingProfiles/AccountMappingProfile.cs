@@ -11,7 +11,7 @@ namespace AsrTool.Infrastructure.MappingProfiles
     public AccountMappingProfile()
     {
       CreateMap<BankAccount, AccountDto>()
-        .ForMember(des => des.Id, opt => opt.MapFrom(src => src.Id))
+        .ForMember(des => des.BankAccountId, opt => opt.MapFrom(src => src.Id))
         .ForMember(des => des.AccountNumber, opt => opt.MapFrom(src => src.AccountNumber))
         .ForMember(des => des.Balance, opt => opt.MapFrom(src => src.Balance));
 
