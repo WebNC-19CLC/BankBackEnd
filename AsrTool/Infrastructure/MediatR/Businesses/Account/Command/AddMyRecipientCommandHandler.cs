@@ -27,10 +27,12 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
       var user = await _context.Get<Employee>().SingleOrDefaultAsync(x => x.Id == _userResolver.CurrentUser.Id);
       var bankAccount = await _context.Get<BankAccount>().Include(x => x.Recipients).SingleOrDefaultAsync(x => x.Id == user.BankAccountId);
 
+      var bankAccountRecp = await _context.Get<Employee>().Include(x => x.BankAccount).SingleOrDefaultAsync(x => x.BankAccount.AccountNumber == request.Request.AccountNumber);
+
       var recipient = new Recipient
       {
         AccountNumber = request.Request.AccountNumber,
-        SuggestedName = request.Request.SuggestedName,
+        SuggestedName = request.Request.SuggestedName != null ? request.Request.SuggestedName : bankAccountRecp.FullName,
         BankDestinationId = request.Request.BankDestinationId,
       };
 
