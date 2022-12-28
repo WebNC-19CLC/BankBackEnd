@@ -1,8 +1,7 @@
 ﻿namespace AsrTool.Dtos
 {
-  public class MakeTransactionDto
+  public class SelfTransferDto
   {
-    public string FromAccountNumber { get; set; }
     public string ToAccountNumber { get; set; }
     public double Amount { get; set; }
     public int? BankId { get; set; }

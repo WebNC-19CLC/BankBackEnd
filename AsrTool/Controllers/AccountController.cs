@@ -38,24 +38,38 @@ namespace AsrTool.Controllers
     }
 
     [HttpPost("get-recipient")]
-    public async Task<RecipientDto> GetRecipient([FromBody] GetRecipientRequestDto dto) {
+    public async Task<RecipientDto> GetRecipient([FromBody] GetRecipientRequestDto dto)
+    {
       return await Mediator.Send(new GetRecipientQuery() { Request = dto });
     }
 
+    [HttpGet("me/transactions")]
+    public async Task<ICollection<TransactionDto>> GetMyTransactions() {
+      return await Mediator.Send(new GetMyTransactionsQuery());
+    }
+
     [HttpGet("me/my-recipients")]
-    public async Task<ICollection<RecipientDto>> GetMyRecipients() {
+    public async Task<ICollection<RecipientDto>> GetMyRecipients()
+    {
       return await Mediator.Send(new GetMyRecipientsQuery());
     }
 
     [HttpPost("me/edit-my-recipient")]
-    public async Task<RecipientDto> EditMyRecipient([FromBody] RecipientDto editDto) {
-      return await Mediator.Send(new EditMyRecipientCommand() {Request = editDto });
+    public async Task<RecipientDto> EditMyRecipient([FromBody] RecipientDto editDto)
+    {
+      return await Mediator.Send(new EditMyRecipientCommand() { Request = editDto });
     }
 
     [HttpPost("me/add-my-recipient")]
     public async Task<RecipientDto> AddRecipient([FromBody] CreateRecipientDto dto)
     {
       return await Mediator.Send(new AddMyRecipientCommand() { Request = dto });
+    }
+
+    [HttpPost("me/transfer-money")]
+    public async Task TransferMoney([FromBody] SelfTransferDto dto)
+    {
+      await Mediator.Send(new TransferMoneyCommand() { Request = dto });
     }
 
     [HttpPost("make-transaction")]

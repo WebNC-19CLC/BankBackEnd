@@ -19,7 +19,7 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Queries
       return await _asrContext.Get<Transaction>().Include(x => x.From)
         .Include(x => x.To)
         .Where(x => x.FromId == request.AccountId || x.ToId == request.AccountId )
-        .Select(x => new TransactionDto { Id = x.Id, From = x.From.AccountNumber, To = x.To.AccountNumber, Amount = x.Amount , Time = x.CreatedOn })
+        .Select(x => new TransactionDto { Id = x.Id, FromAccountNumber = x.From.AccountNumber, ToAccountNumber = x.To.AccountNumber, Amount = x.Amount , Time = x.CreatedOn, BankDestinationId = x.BankDestinationId })
         .ToListAsync();
     }
   }
