@@ -24,7 +24,7 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Queries
 
     public async Task<AccountDto> Handle(GetCurrentAccountQuery request, CancellationToken cancellationToken)
     {
-      var currentUser = await _context.Get<Employee>().Include(x => x.BankAccount).ThenInclude(x => x.Recipients).SingleOrDefaultAsync(x => x.Id == _userResolver.CurrentUser.Id);
+      var currentUser = await _context.Get<Employee>().Include(x => x.Role).Include(x => x.BankAccount).ThenInclude(x => x.Recipients).SingleOrDefaultAsync(x => x.Id == _userResolver.CurrentUser.Id);
 
       if (currentUser == null) {
         throw new NotFoundException<BankAccount>(_userResolver.CurrentUser.Id);
