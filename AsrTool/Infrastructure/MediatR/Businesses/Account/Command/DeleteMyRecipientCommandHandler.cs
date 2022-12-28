@@ -26,6 +26,12 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
     {
       var recipient = await _context.Get<Recipient>().SingleOrDefaultAsync(x => x.Id == request.Id);
 
+      var user = await _context.Get<Employee>().Include(x => x.BankAccount).ThenInclude(x => x.Recipients).SingleOrDefaultAsync(x => x.Id == _userResolver.CurrentUser.Id);
+      
+      if (!user.BankAccount.Recipients.Any(x => x.Id == request.Id)) {
+        throw new BusinessException("Cannot find this recipient in your list");
+      }
+
       if(recipient == null)
       {
         throw new BusinessException("Recipient not exist");
