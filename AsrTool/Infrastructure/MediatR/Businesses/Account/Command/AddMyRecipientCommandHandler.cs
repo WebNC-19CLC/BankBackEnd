@@ -29,6 +29,16 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
 
       var bankAccountRecp = await _context.Get<Employee>().Include(x => x.BankAccount).SingleOrDefaultAsync(x => x.BankAccount.AccountNumber == request.Request.AccountNumber);
 
+      if (bankAccount.Recipients.Any(x => x.AccountNumber == request.Request.AccountNumber))
+      {
+        throw new BusinessException("This account number is exist in your recipients list");
+      }
+
+      if (bankAccountRecp == null)
+      {
+        throw new BusinessException("This account number is not existed");
+      }
+
       var recipient = new Recipient
       {
         AccountNumber = request.Request.AccountNumber,
