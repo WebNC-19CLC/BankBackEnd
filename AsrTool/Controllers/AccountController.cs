@@ -44,7 +44,8 @@ namespace AsrTool.Controllers
     }
 
     [HttpGet("me/transactions")]
-    public async Task<ICollection<TransactionDto>> GetMyTransactions() {
+    public async Task<ICollection<TransactionDto>> GetMyTransactions()
+    {
       return await Mediator.Send(new GetMyTransactionsQuery());
     }
 
@@ -53,6 +54,13 @@ namespace AsrTool.Controllers
     {
       return await Mediator.Send(new GetMyRecipientsQuery());
     }
+
+    [HttpDelete("me/my-recipients/{id}")]
+    public async Task DeleteMyRecipients([FromRoute] int id)
+    {
+      await Mediator.Send(new DeleteMyRecipientCommand() { Id = id });
+    }
+
 
     [HttpPost("me/edit-my-recipient")]
     public async Task<RecipientDto> EditMyRecipient([FromBody] RecipientDto editDto)
