@@ -1,6 +1,18 @@
-﻿namespace AsrTool.Infrastructure.Auth
+﻿using Microsoft.AspNetCore.Authorization;
+
+namespace AsrTool.Infrastructure.Auth
 {
-    public class HaveHashPublicKeyRequirement
+    public class HaveHashSignatureRequirement : IAuthorizationRequirement
     {
+        public string TimeHeader;
+        public string SignatureHeader;
+        public string FromHeader;
+
+        public HaveHashSignatureRequirement(string signatureHeader, string timeHeader, string fromHeader)
+        {
+            SignatureHeader = signatureHeader;
+            TimeHeader = timeHeader;
+            FromHeader = fromHeader;
+        }
     }
 }

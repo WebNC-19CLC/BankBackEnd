@@ -43,6 +43,7 @@
 
 	<ItemGroup>
 		<Folder Include="Infrastructure\Domain\Projections\" />
+		<Folder Include="Infrastructure\MediatR\Businesses\ThirdParty\Command\" />
 		<Folder Include="Infrastructure\MediatR\Businesses\Transaction\Queries\" />
 		<Folder Include="Migrations\" />
 	</ItemGroup>

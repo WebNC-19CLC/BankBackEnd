@@ -3,16 +3,16 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace AsrTool.Infrastructure.Auth
 {
-    public class HaveHashPublicKeyRequirementHandler : AuthorizationHandler<HaveHashPublicKeyRequirementHandler>, IAuthorizationRequirement
+    public class HaveRsaSignatureRequirementHandler : AuthorizationHandler<HaveRsaSignatureRequirement>, IAuthorizationRequirement
     {
         private readonly IAsrContext _context;
 
-        public HaveHashPublicKeyRequirementHandler(IAsrContext context)
+        public HaveRsaSignatureRequirementHandler(IAsrContext context)
         {
             _context = context;
         }
 
-        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, HaveHashPublicKeyRequirementHandler requirement)
+        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, HaveRsaSignatureRequirement requirement)
         {
             throw new NotImplementedException();
         }

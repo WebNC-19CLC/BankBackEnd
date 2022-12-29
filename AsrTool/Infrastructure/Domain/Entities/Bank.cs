@@ -20,11 +20,11 @@ namespace AsrTool.Infrastructure.Domain.Entities
 
     public string API { get; set; }
 
-    public string EncryptPublicKey { get; set; }
+    public string EncryptRsaPublicKey { get; set; }
 
-    public string HashPublicKey { get; set; }
+    public string DecryptRsaPrivateKey { get; set; }
 
-    public string DecryptPrivateKey { get; set; }
+    public string DecryptPublicKey { get; set; }
 
     }
 }
