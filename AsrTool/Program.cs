@@ -1,5 +1,6 @@
 using System.Net;
 using System.Reflection;
+using System.Security.Cryptography;
 using AsrTool;
 using AsrTool.Infrastructure.Auth;
 using AsrTool.Infrastructure.Common;
@@ -21,6 +22,8 @@ using Hangfire.SqlServer;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
@@ -97,13 +100,36 @@ builder.Services.AddSingleton<IStore, Store>();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
   .AddCookie(opt => ApplyCookieOption(opt));
 
-builder.Services.AddAuthorization();
+builder.Services.AddDataProtection()
+    .UseCustomCryptographicAlgorithms(new ManagedAuthenticatedEncryptorConfiguration
+    {
+        // A type that subclasses SymmetricAlgorithm
+        EncryptionAlgorithmType = typeof(RSA),
+
+        // Specified in bits
+        EncryptionAlgorithmKeySize = 1024,
+
+        // A type that subclasses KeyedHashAlgorithm
+        ValidationAlgorithmType = typeof(HMACSHA512),
+    });
+
+builder.Services.AddSingleton<IAuthorizationHandler, HaveHashSignatureRequirementHandler>();
+builder.Services.AddSingleton<IAuthorizationHandler, HaveRsaSignatureRequirementHandler>();
+
+builder.Services.AddAuthorization(option =>
+{
+    option.AddPolicy("ThirdPartyReadApiPolicy", policy => policy.Requirements.Add(new HaveHashSignatureRequirement(
+        "XApiKey", "TimeStamp", "BankSource")));
+    option.AddPolicy("ThirdPartyTransactionApiPolicy", policy => policy.Requirements.Add(new HaveRsaSignatureRequirement(
+        "XApiKey", "TimeStamp", "BankSource")));
+});
+
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, AuthorizationPolicyProvider>();
 builder.Services.AddSingleton<ILdapConnector, LdapConnector>();
 builder.Services.AddScoped<IUserManager, UserManager>();
 
 
-// DB context
+// DB dbContext
 builder.Services.AddDbContext<AsrContext>(opt => opt.UseSqlServer(appSettings.AsrToolDbConnectionString));
 builder.Services.Remove(builder.Services.Single(x => x.ServiceType == typeof(AsrContext)));
 builder.Services.AddScoped<IAsrContext, AsrContext>(p => new AsrContext(p.GetRequiredService<DbContextOptions>(), p.GetRequiredService<IUserResolver>()));
