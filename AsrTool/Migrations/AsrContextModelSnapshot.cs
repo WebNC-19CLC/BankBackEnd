@@ -42,15 +42,15 @@ namespace AsrTool.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("DecryptPrivateKey")
+                    b.Property<string>("DecryptPublicKey")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("EncryptPublicKey")
+                    b.Property<string>("DecryptRsaPrivateKey")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("HashPublicKey")
+                    b.Property<string>("EncryptRsaPublicKey")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
