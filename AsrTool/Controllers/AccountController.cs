@@ -22,12 +22,6 @@ namespace AsrTool.Controllers
       return await Mediator.Send(new GetAccountsQuery());
     }
 
-    [HttpGet("{id}/transaction")]
-    public async Task<List<TransactionDto>> GetTransaction([FromRoute] int id)
-    {
-      return await Mediator.Send(new GetTransactionQuery() { AccountId = id });
-    }
-
     [HttpGet("me")]
     public async Task<AccountDto> GetCurrentAccount()
     {
@@ -80,10 +74,10 @@ namespace AsrTool.Controllers
       await Mediator.Send(new TransferMoneyCommand() { Request = dto });
     }
 
-    [HttpPost("make-transaction")]
-    public async Task MakeTransaction([FromBody] MakeTransactionDto dto)
+    [HttpPost("/me/change-password")]
+    public async Task ChangePassword([FromBody] ChangePasswordDto dto)
     {
-      await Mediator.Send(new MakeTransactionCommand() { MakeTransactionDto = dto });
+      await Mediator.Send(new ChangeMyPasswordCommand() { Request = dto });
     }
   }
 }
