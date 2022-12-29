@@ -8,16 +8,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
 {
-  public class CreateAccountCommandAuthorizer : IAuthorizer<CreateAccountCommand>
+  public class ChargeMoneyToAccountCommandAuthorizer : IAuthorizer<ChargeMoneyToAccountCommand>
   {
     private readonly IUserResolver _userResolver;
 
-    public CreateAccountCommandAuthorizer(IUserResolver userResolver)
+    public ChargeMoneyToAccountCommandAuthorizer(IUserResolver userResolver)
     {
       _userResolver = userResolver;
     }
 
-    public async Task<AuthorizationResult> AuthorizeAsync(CreateAccountCommand instance, CancellationToken cancellation = default)
+    public async Task<AuthorizationResult> AuthorizeAsync(ChargeMoneyToAccountCommand instance, CancellationToken cancellation = default)
     {
       if (_userResolver.CurrentUser.RoleName == Constants.Roles.Admin || _userResolver.CurrentUser.RoleName == Constants.Roles.Employee)
       {

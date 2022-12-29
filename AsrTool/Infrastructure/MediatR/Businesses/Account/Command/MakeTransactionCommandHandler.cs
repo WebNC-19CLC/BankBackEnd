@@ -59,7 +59,7 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
         ToId = to.Id,
         Amount = request.MakeTransactionDto.Amount,
         Type = "Transaction",
-        Description = $"Account {_userResolver.CurrentUser.FullName} transfer {request.MakeTransactionDto.Amount} units",
+        Description = request.MakeTransactionDto.Description != null && request.MakeTransactionDto.Description != string.Empty ? request.MakeTransactionDto.Description : $"Account {_userResolver.CurrentUser.FullName} transfer {request.MakeTransactionDto.Amount} units",
         ChargeReceiver = request.MakeTransactionDto.ChargeReceiver,
         TransactionFee = Constants.Fee.TransactionFee
       };

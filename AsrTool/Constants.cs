@@ -15,6 +15,16 @@
       public const double TransactionFee = 1;
       
     }
+
+    public static readonly string[] TestAccounts = { "tai", "anh", "admin", "employee" };
+
+    public struct TestAccount {
+      public const string Tai = "tai";
+      public const string Anh = "anh";
+      public const string Admin = "admin";
+      public const string Employee = "employee";
+    }
+
     public struct Languages
     {
       public const string DE = "DE";

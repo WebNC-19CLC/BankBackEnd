@@ -12,6 +12,8 @@ namespace AsrTool.Infrastructure.Domain.Objects.Configurations
 
     public string ErpEmployeeView { get; set; } = default!;
 
+    public string RecaptchaSecretKey { get; set; } = default!;
+
     public ApplicationEnvironment Environment { get; set; }
 
     public string? KeyPath { get; set; }
