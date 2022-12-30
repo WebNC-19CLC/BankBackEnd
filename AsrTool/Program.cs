@@ -1,5 +1,6 @@
 using System.Net;
 using System.Reflection;
+using System.Security.Cryptography;
 using AsrTool;
 using AsrTool.Infrastructure.Auth;
 using AsrTool.Infrastructure.Common;
@@ -21,12 +22,15 @@ using Hangfire.SqlServer;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using Serilog;
+using Microsoft.AspNetCore.Builder;
 
 var builder = WebApplication.CreateBuilder(args);
 var DevAllowSpecificOrigins = "DevAllowSpecificOrigins";
@@ -97,13 +101,27 @@ builder.Services.AddSingleton<IStore, Store>();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
   .AddCookie(opt => ApplyCookieOption(opt));
 
+builder.Services.AddDataProtection();
+
+//builder.Services.AddTransient<IAuthorizationHandler, HaveHashSignatureRequirementHandler>();
+//builder.Services.AddTransient<IAuthorizationHandler, HaveRsaSignatureRequirementHandler>();
+
+//builder.Services.AddAuthorization(option =>
+//{
+//    option.AddPolicy("PRE:ThirdPartyReadApiPolicy", policy => policy.Requirements.Add(new HaveHashSignatureRequirement(
+//        "XApiKey", "TimeStamp", "BankSource")));
+//    option.AddPolicy("PRE:ThirdPartyTransactionApiPolicy", policy => policy.Requirements.Add(new HaveRsaSignatureRequirement(
+//        "XApiKey", "TimeStamp", "BankSource")));
+//});
+
 builder.Services.AddAuthorization();
+
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, AuthorizationPolicyProvider>();
 builder.Services.AddSingleton<ILdapConnector, LdapConnector>();
 builder.Services.AddScoped<IUserManager, UserManager>();
 
 
-// DB context
+// DB dbContext
 builder.Services.AddDbContext<AsrContext>(opt => opt.UseSqlServer(appSettings.AsrToolDbConnectionString));
 builder.Services.Remove(builder.Services.Single(x => x.ServiceType == typeof(AsrContext)));
 builder.Services.AddScoped<IAsrContext, AsrContext>(p => new AsrContext(p.GetRequiredService<DbContextOptions>(), p.GetRequiredService<IUserResolver>()));
@@ -127,11 +145,24 @@ app.UseMiddleware<ExceptionMiddleware>();
 app.UseCors(DevAllowSpecificOrigins);
 
 app.UseAuthentication();
-app.UseMiddleware<CookieOnlyAuthenticationMiddleware>();
+
+app.UseWhen(context => !context.Request.Path.StartsWithSegments("/api/thirdparty"),
+    builder =>
+    {
+        builder.UseMiddleware<CookieOnlyAuthenticationMiddleware>();
+        builder.UseCookiePolicy();
+    });
+
+
+app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/thirdparty"),
+    builder =>
+    {
+        builder.UseMiddleware<ValidSignatureThirdPartyMiddleware>();
+    });
 
 app.UseRouting();
 
-app.UseCookiePolicy();
+//app.UseCookiePolicy();
 
 app.UseAuthorization();
 
@@ -193,6 +224,7 @@ static async Task<bool> IsSeeded(IApplicationBuilder applicationBuilder)
 
 static CookieAuthenticationOptions ApplyCookieOption(CookieAuthenticationOptions options)
 {
+
   options.Cookie.Name = "AsrTool.Auth";
   options.SlidingExpiration = true;
   options.ExpireTimeSpan = TimeSpan.FromMinutes(360);
