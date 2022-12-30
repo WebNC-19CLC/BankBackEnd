@@ -76,5 +76,42 @@ namespace AsrTool.Infrastructure.Common.Imp
 
       return smtp;
     }
+
+    public string GetMessage(string OTP)
+    {
+      string messageBody = "<font><h2>This is your OTP Code for Internet Banking:</h2> </font><br>";
+
+      string OTPstring = $"<b><h3>{OTP}</h3></b><br>";
+
+      string messageEnd = "<font>Please dont share this code with anyone</font>";
+
+      string message = messageBody + OTPstring + messageEnd;
+
+      return message;
+    }
+
+    public async Task EmailAsync(string OTP, string email)
+    {
+      try
+      {
+        MailMessage message = new MailMessage();
+        SmtpClient smtp = new SmtpClient();
+        message.From = new MailAddress("kiritoanh1@gmail.com");
+        message.To.Add(new MailAddress(email));
+        message.Subject = "Bank OTP";
+        message.IsBodyHtml = true; //to make message body as html
+        message.Body = GetMessage(OTP);
+        smtp.Port = 587;
+        smtp.Host = "smtp.gmail.com"; //for gmail host
+        smtp.EnableSsl = true;
+        smtp.UseDefaultCredentials = false;
+        smtp.Credentials = new NetworkCredential("kiritoanh1@gmail.com", "vddiescehayexhjg");
+        smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
+        await smtp.SendMailAsync(message);
+      }
+      catch (Exception e) {
+        throw e;
+      }
+    }
   }
 }

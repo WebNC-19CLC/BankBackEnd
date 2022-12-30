@@ -3,6 +3,7 @@ using AsrTool.Dtos.UserRoleDtos;
 using AsrTool.Infrastructure.Domain.Enums;
 using AsrTool.Infrastructure.MediatR.Businesses.ReferenceData.Queries;
 using AsrTool.Infrastructure.MediatR.Businesses.User.Queries;
+using AsrTool.Infrastructure.MediatR.Businesses.Account.Command;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,6 +22,12 @@ namespace AsrTool.Controllers
     public async Task<IEnumerable<ReferenceDataResultDto>> GetReferenceData([FromBody] IEnumerable<ReferenceDataType> types)
     {
       return await Mediator.Send(new GetReferenceDataQuery { Types = types });
+    }
+
+    [HttpGet("testEmailService")]
+    public async Task TestEmailServive()
+    {
+      await Mediator.Send(new SendOTPEmailCommand() { Email = "maihoanganhko@gmail.com", OTP = "324311" });
     }
 
     [HttpPost("searchUsersByTerm")]
