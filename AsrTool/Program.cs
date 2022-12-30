@@ -30,6 +30,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using Serilog;
+using Microsoft.AspNetCore.Builder;
 
 var builder = WebApplication.CreateBuilder(args);
 var DevAllowSpecificOrigins = "DevAllowSpecificOrigins";
@@ -100,29 +101,20 @@ builder.Services.AddSingleton<IStore, Store>();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
   .AddCookie(opt => ApplyCookieOption(opt));
 
-builder.Services.AddDataProtection()
-    .UseCustomCryptographicAlgorithms(new ManagedAuthenticatedEncryptorConfiguration
-    {
-        // A type that subclasses SymmetricAlgorithm
-        EncryptionAlgorithmType = typeof(RSA),
+builder.Services.AddDataProtection();
 
-        // Specified in bits
-        EncryptionAlgorithmKeySize = 1024,
+//builder.Services.AddTransient<IAuthorizationHandler, HaveHashSignatureRequirementHandler>();
+//builder.Services.AddTransient<IAuthorizationHandler, HaveRsaSignatureRequirementHandler>();
 
-        // A type that subclasses KeyedHashAlgorithm
-        ValidationAlgorithmType = typeof(HMACSHA512),
-    });
+//builder.Services.AddAuthorization(option =>
+//{
+//    option.AddPolicy("PRE:ThirdPartyReadApiPolicy", policy => policy.Requirements.Add(new HaveHashSignatureRequirement(
+//        "XApiKey", "TimeStamp", "BankSource")));
+//    option.AddPolicy("PRE:ThirdPartyTransactionApiPolicy", policy => policy.Requirements.Add(new HaveRsaSignatureRequirement(
+//        "XApiKey", "TimeStamp", "BankSource")));
+//});
 
-builder.Services.AddSingleton<IAuthorizationHandler, HaveHashSignatureRequirementHandler>();
-builder.Services.AddSingleton<IAuthorizationHandler, HaveRsaSignatureRequirementHandler>();
-
-builder.Services.AddAuthorization(option =>
-{
-    option.AddPolicy("ThirdPartyReadApiPolicy", policy => policy.Requirements.Add(new HaveHashSignatureRequirement(
-        "XApiKey", "TimeStamp", "BankSource")));
-    option.AddPolicy("ThirdPartyTransactionApiPolicy", policy => policy.Requirements.Add(new HaveRsaSignatureRequirement(
-        "XApiKey", "TimeStamp", "BankSource")));
-});
+builder.Services.AddAuthorization();
 
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, AuthorizationPolicyProvider>();
 builder.Services.AddSingleton<ILdapConnector, LdapConnector>();
@@ -153,11 +145,24 @@ app.UseMiddleware<ExceptionMiddleware>();
 app.UseCors(DevAllowSpecificOrigins);
 
 app.UseAuthentication();
-app.UseMiddleware<CookieOnlyAuthenticationMiddleware>();
+
+app.UseWhen(context => !context.Request.Path.StartsWithSegments("/api/thirdparty"),
+    builder =>
+    {
+        builder.UseMiddleware<CookieOnlyAuthenticationMiddleware>();
+        builder.UseCookiePolicy();
+    });
+
+
+app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/thirdparty"),
+    builder =>
+    {
+        builder.UseMiddleware<ValidSignatureThirdPartyMiddleware>();
+    });
 
 app.UseRouting();
 
-app.UseCookiePolicy();
+//app.UseCookiePolicy();
 
 app.UseAuthorization();
 
@@ -219,6 +224,7 @@ static async Task<bool> IsSeeded(IApplicationBuilder applicationBuilder)
 
 static CookieAuthenticationOptions ApplyCookieOption(CookieAuthenticationOptions options)
 {
+
   options.Cookie.Name = "AsrTool.Auth";
   options.SlidingExpiration = true;
   options.ExpireTimeSpan = TimeSpan.FromMinutes(360);

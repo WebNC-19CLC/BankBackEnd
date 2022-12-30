@@ -16,7 +16,7 @@ namespace AsrTool.Controllers
         }
 
         [HttpGet("customers/{AccountNumber}")]
-        [Authorize(Policy = "PRE:ThirdPartyReadApiPolicy")]
+        //[Authorize(Policy = "PRE:ThirdPartyReadApiPolicy")]
         public async Task<AccountDto> GetCustomerByAccountNumber([FromRoute] string accountNumber)
         {
             var result = await Mediator.Send(new GetCustomerInfoQuery
@@ -27,7 +27,7 @@ namespace AsrTool.Controllers
         }
 
         [HttpPost("transactions")]
-        [Authorize(Policy = "PRE:ThirdPartyTransactionApiPolicy")]
+        //[Authorize(Policy = "PRE:ThirdPartyTransactionApiPolicy")]
         public async Task<List<AccountDto>> MakeTransaction([FromBody]  SelfReceiveDto selfReceiveDto)
         {
             return null;
