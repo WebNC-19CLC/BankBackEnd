@@ -3,6 +3,8 @@ using AsrTool.Infrastructure.Context;
 using MediatR;
 using BC = BCrypt.Net.BCrypt;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography;
+using AsrTool.Infrastructure.Helpers;
 
 namespace AsrTool.Infrastructure.MediatR.Businesses.Bank.Command
 {
@@ -22,13 +24,19 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Bank.Command
             {
                 throw new Exception("Bank name is already existed");
             }
+
+            var csp = new RSACryptoServiceProvider(1024);
+            var privKey = csp.ExportParameters(true);
+            var pubKey = csp.ExportParameters(false);
+
+
             var newBank = new Domain.Entities.Bank
             {
                 Name = request.Request.Name,
                 API = request.Request.API,
-                DecryptPublicKey = request.Request.DecryptPublicKey,
-                DecryptRsaPrivateKey = request.Request.DecryptRsaPrivateKey,
-                EncryptRsaPublicKey = request.Request.EncryptRsaPublicKey,
+                DecryptPublicKey = KeyParseHelper.ConvertRSAKeyToString(pubKey),
+                DecryptRsaPrivateKey = KeyParseHelper.ConvertRSAKeyToString(privKey),
+                EncryptRsaPublicKey = "",
             };
 
             await _asrContext.AddAsync(newBank);

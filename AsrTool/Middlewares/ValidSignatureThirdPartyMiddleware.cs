@@ -1,13 +1,18 @@
 ﻿using System.Net;
+using System.Runtime.Serialization;
 using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Xml.Serialization;
 using AsrTool.Infrastructure.Auth;
 using AsrTool.Infrastructure.Context;
 using AsrTool.Infrastructure.Domain.Entities;
+using AsrTool.Infrastructure.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Primitives;
+using NetTopologySuite.IO;
 
 namespace AsrTool.Middlewares
 {
@@ -25,10 +30,9 @@ namespace AsrTool.Middlewares
 
         public async Task Invoke(HttpContext httpContext, IAsrContext asrContext)
         {
-            string a = httpContext.Request.Method;
-            //skip
-            await _next(httpContext);
-            return;
+            ////skip
+            //await _next(httpContext);
+            //return;
 
             if (!httpContext.Request.Headers.TryGetValue(SignatureHeader, out var signature))
             {
@@ -68,14 +72,32 @@ namespace AsrTool.Middlewares
             String uri = httpContext.Request.Path.ToString();
             String authenticationDataString = (String.Format("{0}{1}{2}", uri, sendTime, from));
 
-            string hashedToken = ComputeHash(bank.DecryptPublicKey, authenticationDataString);
+            bool isAuthorized = true;
+            if (httpContext.Request.Method == HttpMethod.Get.Method)
+            {
+                string hashedToken = ComputeHash(bank.DecryptPublicKey, authenticationDataString);
+                if (!signature.ToString().Equals(hashedToken))
+                {
+                    isAuthorized = false;
+                    return;
+                }
+            }else if(httpContext.Request.Method == HttpMethod.Post.Method)
+            {
+                string privateKey = bank.DecryptRsaPrivateKey;
+                string message = RsaDecryption(signature.ToString(), privateKey);
+                if (!message.ToString().Equals(from.ToString()))
+                {
+                    isAuthorized = false;
+                }
+            }
 
-            if (!signature.ToString().Equals(hashedToken))
+            if(!isAuthorized)
             {
                 httpContext.Response.StatusCode = 401;
                 await httpContext.Response.WriteAsync("Unauthorized client");
                 return;
             }
+
             await _next(httpContext);
         }
 
@@ -88,6 +110,39 @@ namespace AsrTool.Middlewares
                 return true;
             }
             return false;
+        }
+
+        private string RsaDecryption(string cipherText, string rsaPrivateKey)
+        {
+            var csp = new RSACryptoServiceProvider();
+
+
+
+            var plainTextData = "bank1";
+            var bytesPlainTextData = Encoding.Unicode.GetBytes(plainTextData);
+
+            var bytesCypherText = csp.Encrypt(bytesPlainTextData, false);
+            var cypherText = Convert.ToBase64String(bytesCypherText);
+
+            csp = new RSACryptoServiceProvider();
+            csp.ImportParameters(KeyParseHelper.ConvertStringToRSAKey(rsaPrivateKey));
+
+            bytesCypherText = Convert.FromBase64String(cipherText);
+
+            bytesPlainTextData = csp.Decrypt(bytesCypherText, false);
+            //get our original plainText back...
+            plainTextData = Encoding.Unicode.GetString(bytesPlainTextData);
+
+            return plainTextData;
+
+        }
+
+        public string GetPublicKey(string publicKey)
+        {
+            var sw = new StringWriter();
+            var xs = new XmlSerializer(typeof(RSAParameters));
+            xs.Serialize(sw, publicKey);
+            return sw.ToString();
         }
 
         private string ComputeHash(String secretKey, String authenticationDataString)
