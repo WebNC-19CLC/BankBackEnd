@@ -1,4 +1,5 @@
 ﻿using AsrTool.Infrastructure.Domain.Entities.Interfaces;
+using AsrTool.Infrastructure.Domain.Enums;
 
 namespace AsrTool.Infrastructure.Domain.Entities
 {
@@ -18,7 +19,10 @@ namespace AsrTool.Infrastructure.Domain.Entities
 
     public string Code { get; set; }
 
-    public string Type { get; set; } = default!;
+    public string? Type { get; set; } = default!;
 
+    public DateTime ExpiredAt { get; set; }
+
+    public OTPStatus Status { get; set; } = OTPStatus.NotUsed;
   }
 }

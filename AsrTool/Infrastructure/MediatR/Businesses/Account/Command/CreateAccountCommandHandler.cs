@@ -43,15 +43,30 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
         Phone = request.Request.Phone,
         Site = request.Request.Address,
         IdentityNumber = request.Request.IndentityNumber,
-        BankAccount = new BankAccount {
-          AccountNumber = GetRandomNumber(),
-          Balance = request.Request.Balance,
-          Recipients = new List<Recipient>(),
-          OTPS = new List<OTP>(),
-        }
+       
       };
 
-      await _asrContext.AddAsync(newUser);
+     
+
+  
+
+      await _asrContext.AddRangeAsync(newUser);
+
+      await _asrContext.SaveChangesAsync();
+
+      var bankAccount = new BankAccount
+      {
+        AccountNumber = GetRandomNumber(),
+        Balance = request.Request.Balance,
+        Recipients = new List<Recipient>(),
+        OTP = null,
+        User = newUser
+      };
+
+      newUser.BankAccount = bankAccount;
+
+
+      await _asrContext.AddRangeAsync(bankAccount);
 
       await _asrContext.SaveChangesAsync();
 
