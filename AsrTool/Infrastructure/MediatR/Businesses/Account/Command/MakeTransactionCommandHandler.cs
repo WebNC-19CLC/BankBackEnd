@@ -56,12 +56,14 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
       var trans = new Transaction
       {
         FromId = from.Id,
+        FromAccountNumber = from.AccountNumber,
+        ToAccountNumber = to.AccountNumber,
         ToId = to.Id,
         Amount = request.MakeTransactionDto.Amount,
-        Type = "Transaction",
+        Type = request.MakeTransactionDto.Type,
         Description = request.MakeTransactionDto.Description != null && request.MakeTransactionDto.Description != string.Empty ? request.MakeTransactionDto.Description : $"Account {_userResolver.CurrentUser.FullName} transfer {request.MakeTransactionDto.Amount} units",
         ChargeReceiver = request.MakeTransactionDto.ChargeReceiver,
-        TransactionFee = Constants.Fee.TransactionFee
+        TransactionFee = Constants.Fee.TransactionFee,
       };
 
       await _asrContext.AddRangeAsync(trans);

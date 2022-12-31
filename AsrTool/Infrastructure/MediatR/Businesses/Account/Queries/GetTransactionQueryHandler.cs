@@ -16,10 +16,21 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Queries
     }
     public async Task<List<TransactionDto>> Handle(GetTransactionQuery request, CancellationToken cancellationToken)
     {
-      return await _asrContext.Get<Transaction>().Include(x => x.From)
-        .Include(x => x.To)
+      return await _asrContext.Get<Transaction>().Include(x => x.From).ThenInclude(x => x.User)
+        .Include(x => x.To).ThenInclude(x => x.User)
         .Where(x => x.FromId == request.AccountId || x.ToId == request.AccountId )
-        .Select(x => new TransactionDto { Id = x.Id, FromAccountNumber = x.From.AccountNumber, ToAccountNumber = x.To.AccountNumber, Amount = x.Amount , Time = x.CreatedOn, BankDestinationId = x.BankDestinationId })
+        .OrderByDescending(x => x.Id)
+        .Select(x => new TransactionDto { 
+          Id = x.Id, 
+          FromAccountNumber = x.From.AccountNumber, 
+          ToAccountNumber = x.To.AccountNumber, 
+          Amount = x.Amount , 
+          Time = x.CreatedOn,
+          FromUser = x.From.User.FullName,
+          ToUser = x.To.User.FullName,
+          BankDestinationId = x.BankDestinationId,
+          BankSourceId = x.BankSourceId,
+        })
         .ToListAsync();
     }
   }

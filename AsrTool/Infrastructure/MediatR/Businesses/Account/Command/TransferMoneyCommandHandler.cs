@@ -37,6 +37,7 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
         Amount = request.Request.Amount,
         FromAccountNumber = user.BankAccount.AccountNumber,
         ToAccountNumber = request.Request.ToAccountNumber,
+        Type = "Transaction"
       };
 
       return await _mediator.Send(new MakeTransactionCommand() {MakeTransactionDto = transaction } );
