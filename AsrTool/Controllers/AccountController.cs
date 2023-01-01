@@ -103,6 +103,5 @@ namespace AsrTool.Controllers
     {
       await Mediator.Send(new GenerateOTPCommand() { } );
     }
-
   }
 }

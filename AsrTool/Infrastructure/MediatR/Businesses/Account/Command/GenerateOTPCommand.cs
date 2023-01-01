@@ -1,6 +1,8 @@
-﻿namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
+﻿using MediatR;
+
+namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
 {
-  public class GenerateOTPCommand
+  public class GenerateOTPCommand : IRequest
   {
   }
 }
