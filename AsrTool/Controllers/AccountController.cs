@@ -98,10 +98,22 @@ namespace AsrTool.Controllers
       return await Mediator.Send(new CreateDebitCommand() { Request = dto });
     }
 
+    [HttpPost("me/debits/pay")]
+    public async Task AddNewDebit([FromBody] int id)
+    {
+      await Mediator.Send(new PayMyDebitCommand() { Id = id });
+    }
+
+    [HttpPost("me/searchAccountNativeBank")]
+    public async Task<ShortAccountDto?> SearchAccount([FromBody] SearchAccountRequestDto dto)
+    {
+      return await Mediator.Send(new SearchAccountCommand() { AccountNumber = dto.AccountNumber });
+    }
+
     [HttpPost("me/generate-otp")]
     public async Task DeleteMyDebit()
     {
-      await Mediator.Send(new GenerateOTPCommand() { } );
+      await Mediator.Send(new GenerateOTPCommand() { });
     }
   }
 }
