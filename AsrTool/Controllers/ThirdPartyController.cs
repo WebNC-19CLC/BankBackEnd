@@ -39,5 +39,16 @@ namespace AsrTool.Controllers
             return result;
         }
 
+        [HttpPut("transactions/{transactionId}")]
+        //[Authorize(Policy = "PRE:ThirdPartyTransactionApiPolicy")]
+        public async Task<TransactionDto> CompleteTransaction([FromRoute] int id)
+        {
+            var result = await Mediator.Send(new CompleteTransactionCommand
+            {
+                Id = id
+            });
+            return result;
+        }
+
     }
 }

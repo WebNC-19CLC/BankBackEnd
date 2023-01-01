@@ -31,8 +31,8 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.ThirdParty.Command
                 throw new NotFoundException<BankAccount>(request.MakeTransaction.ToAccountNumber);
             }
 
-            to.Balance = to.Balance + request.MakeTransaction.Amount;
-            await _context.UpdateAsync(to);
+            //to.Balance = to.Balance + request.MakeTransaction.Amount;
+            //await _context.UpdateAsync(to);
 
             var transaction = new Transaction
             {
