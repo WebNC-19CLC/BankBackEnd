@@ -8,6 +8,7 @@ namespace AsrTool.Infrastructure.MappingProfiles
     public BankMappingProfile()
     {
         CreateMap<Bank, BankDto>()
+                .ForMember(des => des.Id, otp => otp.MapFrom(src => src.Id))
                 .ForMember(des => des.Name, otp => otp.MapFrom(src => src.Name));
 
     }
