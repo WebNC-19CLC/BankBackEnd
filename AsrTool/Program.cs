@@ -31,6 +31,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using Serilog;
 using Microsoft.AspNetCore.Builder;
+using AsrTool.Infrastructure.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 var DevAllowSpecificOrigins = "DevAllowSpecificOrigins";
@@ -59,7 +60,10 @@ builder.Services.AddAuthorizers();
 builder.Services.AddMediatR(Assembly.GetAssembly(typeof(Program))!);
 
 builder.Services.AddHttpClient();
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(options =>
+{
+    options.Filters.Add(typeof(SecureFilterAttribute));
+});
 
 builder.Services.Configure<CookiePolicyOptions>(options =>
 {
@@ -94,6 +98,7 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddSingleton<ITranslateService, TranslateService>();
 
 // Seeders
+builder.Services.AddScoped<SecureFilterAttribute>();
 builder.Services.AddScoped<ISeeder, EmployeeSeeder>();
 builder.Services.AddScoped<ISeeder, RoleSeeder>();
 builder.Services.AddSingleton<IStore, Store>();

@@ -1,4 +1,6 @@
 ﻿using AsrTool.Dtos;
+using AsrTool.Infrastructure.Filters;
+using AsrTool.Infrastructure.MediatR.Businesses.ThirdParty.Command;
 using AsrTool.Infrastructure.MediatR.Businesses.ThirdParty.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -25,12 +27,16 @@ namespace AsrTool.Controllers
             });
             return result;
         }
-
+        [ServiceFilter(typeof(SecureFilterAttribute))]
         [HttpPost("transactions")]
         //[Authorize(Policy = "PRE:ThirdPartyTransactionApiPolicy")]
-        public async Task<List<AccountDto>> MakeTransaction([FromBody]  SelfReceiveDto selfReceiveDto)
+        public async Task<TransactionDto> MakeTransaction([FromBody]  MakeTransactionDto makeTransactionDto)
         {
-            return null;
+            var result = await Mediator.Send(new ReceiveTransactionCommand
+            {
+                MakeTransaction = makeTransactionDto
+            });
+            return result;
         }
 
     }

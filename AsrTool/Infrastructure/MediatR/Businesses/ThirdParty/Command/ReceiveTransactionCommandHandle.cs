@@ -6,6 +6,7 @@ using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 
 namespace AsrTool.Infrastructure.MediatR.Businesses.ThirdParty.Command
 {
@@ -24,16 +25,32 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.ThirdParty.Command
 
         public async Task<TransactionDto> Handle(ReceiveTransactionCommand request, CancellationToken cancellationToken)
         {
-            var to = await _context.Get<BankAccount>().SingleOrDefaultAsync(x => x.AccountNumber == request.transaction.ToAccountNumber);
+            var to = await _context.Get<BankAccount>().SingleOrDefaultAsync(x => x.AccountNumber == request.MakeTransaction.ToAccountNumber);
             if(to == null)
             {
-                throw new NotFoundException<BankAccount>(request.transaction.ToAccountNumber);
+                throw new NotFoundException<BankAccount>(request.MakeTransaction.ToAccountNumber);
             }
 
-            to.Balance = to.Balance + request.transaction.Amount;
+            to.Balance = to.Balance + request.MakeTransaction.Amount;
             await _context.UpdateAsync(to);
 
-            return request.transaction;
+            var transaction = new Transaction
+            {
+                FromId = null,
+                FromAccountNumber = request.MakeTransaction.FromAccountNumber,
+                ToAccountNumber = to.AccountNumber,
+                ToId = to.Id,
+                Amount = request.MakeTransaction.Amount,
+                Type = request.MakeTransaction.Type,
+                Description = request.MakeTransaction.Description != null && request.MakeTransaction.Description != string.Empty ? request.MakeTransaction.Description : $"Account {request.MakeTransaction.FromAccountNumber} transfer {request.MakeTransaction.Amount} units",
+                ChargeReceiver = false,
+                TransactionFee = Constants.Fee.TransactionFee,
+            };
+
+            await _context.AddRangeAsync(transaction);
+            await _context.SaveChangesAsync();
+
+            return _mapper.Map<Transaction, TransactionDto>(transaction);
         }
     }
 }
