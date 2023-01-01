@@ -16,14 +16,14 @@ using NetTopologySuite.IO;
 
 namespace AsrTool.Middlewares
 {
-    public class ValidSignatureThirdPartyMiddleware
+    public class ThirdPartyMiddleware
     {
         private readonly RequestDelegate _next;
         private const string SignatureHeader = "XApiKey";
         private const string TimeHeader = "TimeStamp";
         private const string FromHeader = "BankSource";
 
-        public ValidSignatureThirdPartyMiddleware(RequestDelegate next)
+        public ThirdPartyMiddleware(RequestDelegate next)
         {
             _next = next;
         }
@@ -62,7 +62,7 @@ namespace AsrTool.Middlewares
 
             var bank = await asrContext.Get<Bank>().SingleOrDefaultAsync(x => x.Name == from.ToString());
 
-            if(bank == null)
+            if (bank == null)
             {
                 httpContext.Response.StatusCode = (int)HttpStatusCode.NotAcceptable;
                 await httpContext.Response.WriteAsync("Bank name not found");
@@ -70,28 +70,11 @@ namespace AsrTool.Middlewares
             }
 
             String uri = httpContext.Request.Path.ToString();
-            String authenticationDataString = (String.Format("{0}{1}{2}", uri, sendTime, from));
+            String dataString = (String.Format("{0}{1}{2}", uri, sendTime, from));
 
-            bool isAuthorized = true;
-            if (httpContext.Request.Method == HttpMethod.Get.Method)
-            {
-                string hashedToken = ComputeHash(bank.DecryptPublicKey, authenticationDataString);
-                if (!signature.ToString().Equals(hashedToken))
-                {
-                    isAuthorized = false;
-                    return;
-                }
-            }else if(httpContext.Request.Method == HttpMethod.Post.Method)
-            {
-                string privateKey = bank.DecryptRsaPrivateKey;
-                string message = RsaDecryption(signature.ToString(), privateKey);
-                if (!message.ToString().Equals(from.ToString()))
-                {
-                    isAuthorized = false;
-                }
-            }
+            bool isAuthorized = Authorize(httpContext, signature, from, bank, dataString);
 
-            if(!isAuthorized)
+            if (!isAuthorized)
             {
                 httpContext.Response.StatusCode = 401;
                 await httpContext.Response.WriteAsync("Unauthorized client");
@@ -112,29 +95,32 @@ namespace AsrTool.Middlewares
             return false;
         }
 
-        private string RsaDecryption(string cipherText, string rsaPrivateKey)
+        private bool Authorize(HttpContext httpContext, StringValues signature, StringValues from, Bank bank, string dataString)
         {
-            var csp = new RSACryptoServiceProvider();
+            bool isAuthorized = true;
 
+            if (httpContext.Request.Method == HttpMethod.Get.Method)
+            {
+                string hashedToken = EncryptionHelper.ComputeHash(bank.DecryptPublicKey, dataString);
 
+                if (!signature.ToString().Equals(hashedToken))
+                {
+                    isAuthorized = false;
+                }
+            }
+            else if (httpContext.Request.Method == HttpMethod.Post.Method)
+            {
+                RSAParameters pKey = EncryptionHelper.ConvertStringToRSAKey(bank.DecryptRsaPrivateKey);
 
-            var plainTextData = "bank1";
-            var bytesPlainTextData = Encoding.Unicode.GetBytes(plainTextData);
+                string message = EncryptionHelper.RSAEncryption(signature.ToString(), pKey);
 
-            var bytesCypherText = csp.Encrypt(bytesPlainTextData, false);
-            var cypherText = Convert.ToBase64String(bytesCypherText);
+                if (!from.ToString().Equals(message.ToString()))
+                {
+                    isAuthorized = false;
+                }
+            }
 
-            csp = new RSACryptoServiceProvider();
-            csp.ImportParameters(KeyParseHelper.ConvertStringToRSAKey(rsaPrivateKey));
-
-            bytesCypherText = Convert.FromBase64String(cipherText);
-
-            bytesPlainTextData = csp.Decrypt(bytesCypherText, false);
-            //get our original plainText back...
-            plainTextData = Encoding.Unicode.GetString(bytesPlainTextData);
-
-            return plainTextData;
-
+            return isAuthorized;
         }
 
         public string GetPublicKey(string publicKey)
@@ -145,14 +131,5 @@ namespace AsrTool.Middlewares
             return sw.ToString();
         }
 
-        private string ComputeHash(String secretKey, String authenticationDataString)
-        {
-            HMACSHA512 hmac = new HMACSHA512(Convert.FromBase64String(secretKey));
-
-            Byte[] authenticationData = UTF8Encoding.GetEncoding("utf-8").GetBytes(authenticationDataString);
-
-            var hashedToken = hmac.ComputeHash(authenticationData);
-            return Convert.ToBase64String(hashedToken);
-        }
     }
 }

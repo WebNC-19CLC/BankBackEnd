@@ -162,7 +162,7 @@ app.UseWhen(context => !context.Request.Path.StartsWithSegments("/api/thirdparty
 app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/thirdparty"),
     builder =>
     {
-        builder.UseMiddleware<ValidSignatureThirdPartyMiddleware>();
+        builder.UseMiddleware<ThirdPartyMiddleware>();
     });
 
 app.UseRouting();

@@ -34,8 +34,8 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Bank.Command
             {
                 Name = request.Request.Name,
                 API = request.Request.API,
-                DecryptPublicKey = KeyParseHelper.ConvertRSAKeyToString(pubKey),
-                DecryptRsaPrivateKey = KeyParseHelper.ConvertRSAKeyToString(privKey),
+                DecryptPublicKey = EncryptionHelper.ConvertRSAKeyToString(pubKey),
+                DecryptRsaPrivateKey = EncryptionHelper.ConvertRSAKeyToString(privKey),
                 EncryptRsaPublicKey = "",
             };
 
