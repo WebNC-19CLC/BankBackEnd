@@ -30,10 +30,6 @@ namespace AsrTool.Middlewares
 
         public async Task Invoke(HttpContext httpContext, IAsrContext asrContext)
         {
-            ////skip
-            //await _next(httpContext);
-            //return;
-
             if (!httpContext.Request.Headers.TryGetValue(SignatureHeader, out var signature))
             {
                 httpContext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
@@ -108,7 +104,7 @@ namespace AsrTool.Middlewares
                     isAuthorized = false;
                 }
             }
-            else if (httpContext.Request.Method == HttpMethod.Post.Method)
+            else if (httpContext.Request.Method == HttpMethod.Post.Method || httpContext.Request.Method == HttpMethod.Put.Method)
             {
                 RSAParameters pKey = EncryptionHelper.ConvertStringToRSAKey(bank.DecryptRsaPrivateKey);
 
@@ -118,17 +114,45 @@ namespace AsrTool.Middlewares
                 {
                     isAuthorized = false;
                 }
+                else
+                {
+                    Action<HttpResponse,Bank> SignSignature = ResponseHandler(bank.Name);
+                    SignSignature(httpContext.Response,bank);
+                }
             }
 
             return isAuthorized;
         }
 
-        public string GetPublicKey(string publicKey)
+        Action<HttpResponse,Bank> ResponseHandler(string bankName)
         {
-            var sw = new StringWriter();
-            var xs = new XmlSerializer(typeof(RSAParameters));
-            xs.Serialize(sw, publicKey);
-            return sw.ToString();
+            switch (bankName)
+            {
+                case "bank1":
+                    return ResponseHanlderBank1;
+                case "bank2":
+                    return ResponseHanlderBank2;
+                default:
+                    return ResponseHanlderBank1;
+            }
+
+        }
+
+        // RSA Security
+        private static void ResponseHanlderBank1(HttpResponse response,Bank bank)
+        {
+            RSAParameters publicKey = EncryptionHelper.ConvertStringToRSAKey(bank.EncryptRsaPublicKey);
+
+            string signature = EncryptionHelper.RSAEncryption(bank.Name, publicKey);
+
+            response.Headers.Add("XApiKey", signature);
+
+        }
+
+        // PGP Security
+        private static void ResponseHanlderBank2(HttpResponse response, Bank bank)
+        {
+
         }
 
     }

@@ -60,10 +60,7 @@ builder.Services.AddAuthorizers();
 builder.Services.AddMediatR(Assembly.GetAssembly(typeof(Program))!);
 
 builder.Services.AddHttpClient();
-builder.Services.AddControllersWithViews(options =>
-{
-    options.Filters.Add(typeof(SecureFilterAttribute));
-});
+builder.Services.AddControllersWithViews();
 
 builder.Services.Configure<CookiePolicyOptions>(options =>
 {
@@ -98,7 +95,6 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddSingleton<ITranslateService, TranslateService>();
 
 // Seeders
-builder.Services.AddScoped<SecureFilterAttribute>();
 builder.Services.AddScoped<ISeeder, EmployeeSeeder>();
 builder.Services.AddScoped<ISeeder, RoleSeeder>();
 builder.Services.AddSingleton<IStore, Store>();

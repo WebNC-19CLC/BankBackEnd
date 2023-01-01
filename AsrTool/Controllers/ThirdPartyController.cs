@@ -27,7 +27,7 @@ namespace AsrTool.Controllers
             });
             return result;
         }
-        [ServiceFilter(typeof(SecureFilterAttribute))]
+
         [HttpPost("transactions")]
         //[Authorize(Policy = "PRE:ThirdPartyTransactionApiPolicy")]
         public async Task<TransactionDto> MakeTransaction([FromBody]  MakeTransactionDto makeTransactionDto)
