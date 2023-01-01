@@ -97,5 +97,12 @@ namespace AsrTool.Controllers
     {
       return await Mediator.Send(new CreateDebitCommand() { Request = dto });
     }
+
+    [HttpPost("me/generate-otp")]
+    public async Task DeleteMyDebit()
+    {
+      await Mediator.Send(new GenerateOTPCommand() { } );
+    }
+
   }
 }

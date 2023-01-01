@@ -25,10 +25,24 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
     }
     public async Task<Unit> Handle(TransferMoneyCommand request, CancellationToken cancellationToken)
     {
-      var user = await _context.Get<Employee>().Include(x => x.BankAccount).AsNoTracking().SingleOrDefaultAsync(x => x.Id == _userResolver.CurrentUser.Id);
+      var user = await _context.Get<Employee>().Include(x => x.BankAccount).ThenInclude(x => x.OTP).AsNoTracking().SingleOrDefaultAsync(x => x.Id == _userResolver.CurrentUser.Id);
 
       if (user.BankAccount == null) {
         throw new BusinessException("This user do not have bank account");
+      }
+
+      if (user.BankAccount.OTP.Code == request.Request.OTP ) {
+        throw new BusinessException("OTP is not match");
+      }
+
+      if (user.BankAccount.OTP.Status == Domain.Enums.OTPStatus.NotUsed)
+      {
+        throw new BusinessException("OTP is used");
+      }
+
+      if (!(DateTime.Compare(user.BankAccount.OTP.ExpiredAt, DateTime.UtcNow) > 0))
+      {
+        throw new BusinessException("Expired OTP");
       }
 
       var transaction = new MakeTransactionDto {

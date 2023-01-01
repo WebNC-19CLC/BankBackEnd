@@ -21,7 +21,7 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
 
     public async Task<Unit> Handle(MakeTransactionCommand request, CancellationToken cancellationToken)
     {
-      var from  =await _asrContext.Get<Domain.Entities.BankAccount>().SingleOrDefaultAsync(x => x.AccountNumber == request.MakeTransactionDto.FromAccountNumber);
+      var from  =await _asrContext.Get<Domain.Entities.BankAccount>().Include(x => x.OTP).SingleOrDefaultAsync(x => x.AccountNumber == request.MakeTransactionDto.FromAccountNumber);
 
       if (from == null) {
         throw new NotFoundException();
@@ -49,6 +49,8 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
         to.Balance = from.Balance + request.MakeTransactionDto.Amount ;
 
       }
+
+      from.OTP.Status = Domain.Enums.OTPStatus.Used;
      
       await _asrContext.UpdateAsync(from);
       await _asrContext.UpdateAsync(to);
