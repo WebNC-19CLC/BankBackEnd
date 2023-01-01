@@ -4,6 +4,7 @@ using AsrTool.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AsrTool.Migrations
 {
     [DbContext(typeof(AsrContext))]
-    partial class AsrContextModelSnapshot : ModelSnapshot
+    [Migration("20221230133102_UpdateTables")]
+    partial class UpdateTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -147,18 +149,12 @@ namespace AsrTool.Migrations
                     b.Property<int?>("BankDestinationId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("BankSourceId")
-                        .HasColumnType("int");
-
                     b.Property<string>("CreatedBy")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DateDue")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
@@ -170,9 +166,6 @@ namespace AsrTool.Migrations
 
                     b.Property<int?>("FromId")
                         .HasColumnType("int");
-
-                    b.Property<bool>("IsPaid")
-                        .HasColumnType("bit");
 
                     b.Property<string>("ModifiedBy")
                         .IsRequired()
@@ -198,8 +191,6 @@ namespace AsrTool.Migrations
                     b.HasIndex("BankAccountId");
 
                     b.HasIndex("BankDestinationId");
-
-                    b.HasIndex("BankSourceId");
 
                     b.HasIndex("FromId");
 
@@ -622,10 +613,6 @@ namespace AsrTool.Migrations
                         .WithMany()
                         .HasForeignKey("BankDestinationId");
 
-                    b.HasOne("AsrTool.Infrastructure.Domain.Entities.Bank", "BankSource")
-                        .WithMany()
-                        .HasForeignKey("BankSourceId");
-
                     b.HasOne("AsrTool.Infrastructure.Domain.Entities.BankAccount", "From")
                         .WithMany()
                         .HasForeignKey("FromId");
@@ -635,8 +622,6 @@ namespace AsrTool.Migrations
                         .HasForeignKey("ToId");
 
                     b.Navigation("BankDestination");
-
-                    b.Navigation("BankSource");
 
                     b.Navigation("From");
 

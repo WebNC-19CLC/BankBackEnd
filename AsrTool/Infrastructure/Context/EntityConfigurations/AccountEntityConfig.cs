@@ -10,6 +10,8 @@ namespace AsrTool.Infrastructure.Context.EntityConfigurations
     public void Configure(EntityTypeBuilder<BankAccount> builder)
     {
       builder.HasIndex(x => x.AccountNumber).IsUnique();
+      builder.HasOne(x => x.OTP).WithMany().HasForeignKey(x => x.OTPId).OnDelete(DeleteBehavior.ClientSetNull);
+      builder.HasOne(x => x.User).WithMany().HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.ClientSetNull);
     }
   }
 }

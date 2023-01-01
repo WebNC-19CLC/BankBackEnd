@@ -74,10 +74,34 @@ namespace AsrTool.Controllers
       await Mediator.Send(new TransferMoneyCommand() { Request = dto });
     }
 
-    [HttpPost("/me/change-password")]
+    [HttpPost("me/change-password")]
     public async Task ChangePassword([FromBody] ChangePasswordDto dto)
     {
       await Mediator.Send(new ChangeMyPasswordCommand() { Request = dto });
+    }
+
+    [HttpGet("me/debits")]
+    public async Task<ICollection<DebitDto>> GetDebits()
+    {
+      return await Mediator.Send(new GetMyDebitsQuery());
+    }
+
+    [HttpDelete("me/debits/{id}")]
+    public async Task DeleteMyDebit([FromRoute] int id)
+    {
+      await Mediator.Send(new DeleteMyDebitCommand() { Id = id });
+    }
+
+    [HttpPost("me/debits")]
+    public async Task<DebitDto> AddNewDebit([FromBody] CreateDebitDto dto)
+    {
+      return await Mediator.Send(new CreateDebitCommand() { Request = dto });
+    }
+
+    [HttpPost("me/generate-otp")]
+    public async Task DeleteMyDebit()
+    {
+      await Mediator.Send(new GenerateOTPCommand() { } );
     }
   }
 }

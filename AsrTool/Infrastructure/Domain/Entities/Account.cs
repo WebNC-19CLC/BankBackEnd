@@ -16,12 +16,20 @@ namespace AsrTool.Infrastructure.Domain.Entities
 
     public string ModifiedBy { get; set; } = default!;
 
-    public string AccountNumber { get; set; } 
+    public string AccountNumber { get; set; }
 
     public double Balance { get; set; }
 
     public ICollection<Recipient> Recipients { get; set; } = new HashSet<Recipient>();
 
-    public ICollection<OTP> OTPS { get; set; } = new HashSet<OTP>();
+    public ICollection<Debit> Debits { get; set; } = new HashSet<Debit>();
+
+    public int? OTPId { get; set; }
+
+    public OTP? OTP { get; set; }
+
+    public int? UserId { get; set; }
+
+    public Employee? User { get; set; }
   }
 }

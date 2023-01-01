@@ -16,9 +16,9 @@ namespace AsrTool.Infrastructure.Domain.Entities
 
     public string ModifiedBy { get; set; } = default!;
 
-    public int FromId { get; set; }
+    public int? FromId { get; set; }
 
-    public BankAccount From { get; set; }
+    public BankAccount? From { get; set; }
 
     public int? ToId { get; set; }
 
@@ -30,8 +30,18 @@ namespace AsrTool.Infrastructure.Domain.Entities
 
     public Bank? BankDestination { get; set; }
 
+    public int? BankSourceId { get; set; }
+
+    public Bank? BankSource { get; set; }
+
+    public string? FromAccountNumber { get; set; }
+
     public double Amount { get; set; }
 
     public string Description { get; set; }
+
+    public bool IsPaid { get; set; } = false;
+
+    public DateTime DateDue { get; set; }
   }
 }

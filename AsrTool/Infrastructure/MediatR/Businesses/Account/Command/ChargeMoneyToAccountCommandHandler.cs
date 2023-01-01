@@ -35,6 +35,7 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
         BankId = null,
         Amount = request.Request.Amount,
         ChargeReceiver = true,
+        Type = "Charge",
         Description = string.Empty,
       };
 

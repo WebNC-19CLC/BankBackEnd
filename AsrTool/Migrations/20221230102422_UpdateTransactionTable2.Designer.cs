@@ -4,6 +4,7 @@ using AsrTool.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AsrTool.Migrations
 {
     [DbContext(typeof(AsrContext))]
-    partial class AsrContextModelSnapshot : ModelSnapshot
+    [Migration("20221230102422_UpdateTransactionTable2")]
+    partial class UpdateTransactionTable2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -42,15 +44,15 @@ namespace AsrTool.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("DecryptPublicKey")
+                    b.Property<string>("DecryptPrivateKey")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("DecryptRsaPrivateKey")
+                    b.Property<string>("EncryptPublicKey")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("EncryptRsaPublicKey")
+                    b.Property<string>("HashPublicKey")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -107,25 +109,15 @@ namespace AsrTool.Migrations
                     b.Property<DateTime>("ModifiedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("OTPId")
-                        .HasColumnType("int");
-
                     b.Property<byte[]>("RowVersion")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
 
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("AccountNumber")
                         .IsUnique();
-
-                    b.HasIndex("OTPId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("BankAccount", (string)null);
                 });
@@ -141,13 +133,7 @@ namespace AsrTool.Migrations
                     b.Property<double>("Amount")
                         .HasColumnType("float");
 
-                    b.Property<int?>("BankAccountId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("BankDestinationId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("BankSourceId")
                         .HasColumnType("int");
 
                     b.Property<string>("CreatedBy")
@@ -158,21 +144,12 @@ namespace AsrTool.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DateDue")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("FromAccountNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("FromId")
+                    b.Property<int>("FromId")
                         .HasColumnType("int");
-
-                    b.Property<bool>("IsPaid")
-                        .HasColumnType("bit");
 
                     b.Property<string>("ModifiedBy")
                         .IsRequired()
@@ -195,11 +172,7 @@ namespace AsrTool.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BankAccountId");
-
                     b.HasIndex("BankDestinationId");
-
-                    b.HasIndex("BankSourceId");
 
                     b.HasIndex("FromId");
 
@@ -381,6 +354,9 @@ namespace AsrTool.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<int?>("BankAccountId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -391,9 +367,6 @@ namespace AsrTool.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("ExpiredAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("ModifiedBy")
@@ -409,13 +382,13 @@ namespace AsrTool.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
                     b.Property<string>("Type")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("BankAccountId");
 
                     b.ToTable("OTP", (string)null);
                 });
@@ -597,46 +570,22 @@ namespace AsrTool.Migrations
                     b.ToTable("Transaction", (string)null);
                 });
 
-            modelBuilder.Entity("AsrTool.Infrastructure.Domain.Entities.BankAccount", b =>
-                {
-                    b.HasOne("AsrTool.Infrastructure.Domain.Entities.OTP", "OTP")
-                        .WithMany()
-                        .HasForeignKey("OTPId");
-
-                    b.HasOne("AsrTool.Infrastructure.Domain.Entities.Employee", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("OTP");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("AsrTool.Infrastructure.Domain.Entities.Debit", b =>
                 {
-                    b.HasOne("AsrTool.Infrastructure.Domain.Entities.BankAccount", null)
-                        .WithMany("Debits")
-                        .HasForeignKey("BankAccountId");
-
                     b.HasOne("AsrTool.Infrastructure.Domain.Entities.Bank", "BankDestination")
                         .WithMany()
                         .HasForeignKey("BankDestinationId");
 
-                    b.HasOne("AsrTool.Infrastructure.Domain.Entities.Bank", "BankSource")
-                        .WithMany()
-                        .HasForeignKey("BankSourceId");
-
                     b.HasOne("AsrTool.Infrastructure.Domain.Entities.BankAccount", "From")
                         .WithMany()
-                        .HasForeignKey("FromId");
+                        .HasForeignKey("FromId")
+                        .IsRequired();
 
                     b.HasOne("AsrTool.Infrastructure.Domain.Entities.BankAccount", "To")
                         .WithMany()
                         .HasForeignKey("ToId");
 
                     b.Navigation("BankDestination");
-
-                    b.Navigation("BankSource");
 
                     b.Navigation("From");
 
@@ -662,6 +611,13 @@ namespace AsrTool.Migrations
                     b.Navigation("Role");
 
                     b.Navigation("Supervisor");
+                });
+
+            modelBuilder.Entity("AsrTool.Infrastructure.Domain.Entities.OTP", b =>
+                {
+                    b.HasOne("AsrTool.Infrastructure.Domain.Entities.BankAccount", null)
+                        .WithMany("OTPS")
+                        .HasForeignKey("BankAccountId");
                 });
 
             modelBuilder.Entity("AsrTool.Infrastructure.Domain.Entities.Recipient", b =>
@@ -706,7 +662,7 @@ namespace AsrTool.Migrations
 
             modelBuilder.Entity("AsrTool.Infrastructure.Domain.Entities.BankAccount", b =>
                 {
-                    b.Navigation("Debits");
+                    b.Navigation("OTPS");
 
                     b.Navigation("Recipients");
                 });
