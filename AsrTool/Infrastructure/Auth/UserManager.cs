@@ -50,7 +50,7 @@ namespace AsrTool.Infrastructure.Auth
           throw new UnauthorizerException("Password is not correct");
         }
 
-        if (matchPassword)
+        if (matchPassword && user.Active)
         {
           var domainUserName = $"{username}";
           _logger.LogInformation($"--------------> Signed in as {domainUserName} <----------------");

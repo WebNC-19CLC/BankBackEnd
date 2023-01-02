@@ -2,9 +2,7 @@
 using AsrTool.Dtos.UserRoleDtos;
 using AsrTool.Infrastructure.MediatR.Businesses.Account.Command;
 using AsrTool.Infrastructure.MediatR.Businesses.Account.Queries;
-using AsrTool.Infrastructure.MediatR.Businesses.Role.Commands;
-using AsrTool.Infrastructure.MediatR.Businesses.User.Commands;
-using AsrTool.Infrastructure.MediatR.Businesses.User.Queries;
+using AsrTool.Infrastructure.MediatR.Businesses.Admin.Command;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -42,6 +40,10 @@ namespace AsrTool.Controllers
       return await Mediator.Send(new GetTransactionQuery() { AccountId = id });
     }
 
-
+    [HttpPost("set-user-active-status")]
+    public async Task SetActiveStatus([FromBody] SetActiveStatusDto request)
+    {
+      await Mediator.Send(new SetUserActiveStatusCommand { Request = request });
+    }
   }
 }
