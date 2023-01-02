@@ -27,6 +27,8 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
 
       var user = await _asrContext.Get<Employee>().Include(x => x.BankAccount).SingleOrDefaultAsync(x => x.Id == _userResolver.CurrentUser.Id);
 
+      var targetAccouunt = await _asrContext.Get<BankAccount>().Include(x => x.User).SingleOrDefaultAsync(x => x.Id == _userResolver.CurrentUser.Id);
+
       if (debit.FromAccountNumber != user?.BankAccount?.AccountNumber) {
         throw new UnauthorizerException("Access Denied");
       }
@@ -43,6 +45,8 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
       };
 
       await _mediator.Send(new MakeTransactionCommand() { MakeTransactionDto = transaction });
+
+      await _mediator.Send(new MakeNotificationCommand() { Request = new MakeNotificationDto {Description = $"{user.FullName} pay you {transaction.Amount} of debit.", AccountId = targetAccouunt.Id } });
 
       return Unit.Value;
     }

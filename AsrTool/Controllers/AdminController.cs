@@ -64,5 +64,12 @@ namespace AsrTool.Controllers
     {
       return await Mediator.Send(new CreateAccountCommand { Request = request });
     }
+
+
+    [HttpPost("create-employee-account")]
+    public async Task<BankAccountDto> CreateEmployeeAccount([FromBody] CreateAccountDto request)
+    {
+      return await Mediator.Send(new CreateEmployeeAccountCommand { Request = request });
+    }
   }
 }

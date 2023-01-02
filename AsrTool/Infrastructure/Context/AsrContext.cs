@@ -42,7 +42,9 @@ namespace AsrTool.Infrastructure.Context
     protected DbSet<Bank> Banks { get; set; } = default!;
 
     protected DbSet<OTP> OTPs { get; set; }
-     
+
+    protected DbSet<Notification> Notifications { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
       base.OnModelCreating(modelBuilder);

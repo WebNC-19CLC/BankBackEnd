@@ -24,6 +24,8 @@ namespace AsrTool.Infrastructure.Domain.Entities
 
     public ICollection<Debit> Debits { get; set; } = new HashSet<Debit>();
 
+    public ICollection<Notification> Notifications { get; set; } = new HashSet<Notification>();
+
     public int? OTPId { get; set; }
 
     public OTP? OTP { get; set; }
