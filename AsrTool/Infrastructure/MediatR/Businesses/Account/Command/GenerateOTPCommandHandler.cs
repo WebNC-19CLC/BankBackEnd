@@ -12,12 +12,14 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
   {
 
     private readonly IAsrContext _asrContext;
+    private readonly IMediator _mediator;
     private readonly IUserResolver _userResolver;
 
-    public GenerateOTPCommandHandler(IAsrContext asrContext, IUserResolver userResolver)
+    public GenerateOTPCommandHandler(IAsrContext asrContext, IUserResolver userResolver, IMediator mediator)
     {
       _asrContext = asrContext;
       _userResolver = userResolver;
+      _mediator = mediator;
     }
 
     public async Task<Unit> Handle(GenerateOTPCommand request, CancellationToken cancellationToken)
@@ -44,8 +46,10 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
         user.BankAccount.OTP.Status = Domain.Enums.OTPStatus.NotUsed;
       }
 
-      await _asrContext.AddRangeAsync(user);
+      await _asrContext.UpdateAsync(user);
       await _asrContext.SaveChangesAsync();
+
+      await _mediator.Send(new SendOTPEmailCommand() {Email = user.Email , OTP = user.BankAccount.OTP.Code });
 
       return Unit.Value;
     }

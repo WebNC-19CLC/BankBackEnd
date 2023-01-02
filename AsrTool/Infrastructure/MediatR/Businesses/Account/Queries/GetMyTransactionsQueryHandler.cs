@@ -27,8 +27,9 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Queries
         throw new BusinessException("This user do not have bank account");
       }
 
-      return await _asrContext.Get<Transaction>().Include(x => x.From).ThenInclude(x => x.User)
-        .Include(x => x.To).ThenInclude(x => x.User)
+      return await _asrContext.Get<Transaction>()
+        .Include(x => x.From).ThenInclude(x => x.User)
+        .Include(x => x.To).ThenInclude(x => x.User).AsSplitQuery()
         .Where(x => x.FromId == user.BankAccount.Id || x.ToId == user.BankAccount.Id)
         .OrderByDescending(x => x.Id)
         .Select(x => new TransactionDto { 
