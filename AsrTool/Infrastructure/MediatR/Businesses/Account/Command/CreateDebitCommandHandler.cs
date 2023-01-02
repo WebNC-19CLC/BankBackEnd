@@ -15,12 +15,14 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
     private readonly IUserResolver _userResolver;
     private readonly IMapper _mapper;
     private readonly IAsrContext _context;
+    private readonly IMediator _mediator;
 
-    public CreateDebitCommandHandler(IUserResolver userResolver, IMapper mapper, IAsrContext context)
+    public CreateDebitCommandHandler(IUserResolver userResolver, IMapper mapper, IAsrContext context, IMediator mediator)
     {
       _userResolver = userResolver;
       _mapper = mapper;
       _context = context;
+      _mediator = mediator;
     }
 
     public async Task<DebitDto> Handle(CreateDebitCommand request, CancellationToken cancellationToken)
@@ -32,23 +34,26 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
         throw new BusinessException("This account does not have bank account.");
       }
 
-      var targetAccount = await _context.Get<BankAccount>().SingleOrDefaultAsync(x => x.AccountNumber == request.Request.AccountNumber);
+      var targetAccount = await _context.Get<BankAccount>().Include(x => x.User).SingleOrDefaultAsync(x => x.AccountNumber == request.Request.AccountNumber);
 
       int? fromId;
       int? toId;
       string? fromAccountNumber;
       string? toAccountNumber;
+      string Debter;
 
       if (request.Request.SelfInDebt)
       {
         fromId = bankAccount.Id;
         fromAccountNumber = bankAccount.AccountNumber;
+        Debter = user.FullName;
         toId = targetAccount.Id;
         toAccountNumber = targetAccount.AccountNumber;
       }
       else {
         fromId = targetAccount.Id;
         fromAccountNumber = targetAccount.AccountNumber;
+        Debter = targetAccount.User.FullName;
         toId = bankAccount.Id;
         toAccountNumber = bankAccount.AccountNumber;
       }
@@ -70,6 +75,8 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
       var resultToReturn = await _context.Get<Debit>().Include(x => x.From).ThenInclude(x => x.User)
         .Include(x => x.To).ThenInclude(x => x.User)
         .SingleOrDefaultAsync(x => x.Id == debit.Id);
+
+      await _mediator.Send(new MakeNotificationCommand() { Request = new MakeNotificationDto { Description = $"You are int debt of {Debter} for {debit.Amount}", AccountId = (int)fromId } }) ;
 
       return new DebitDto
       {

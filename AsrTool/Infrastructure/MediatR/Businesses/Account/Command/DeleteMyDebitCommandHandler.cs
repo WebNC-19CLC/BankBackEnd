@@ -14,12 +14,14 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
     private readonly IUserResolver _userResolver;
     private readonly IMapper _mapper;
     private readonly IAsrContext _context;
+    private readonly IMediator _mediator;
 
-    public DeleteMyDebitCommandHandler(IUserResolver userResolver, IMapper mapper, IAsrContext context)
+    public DeleteMyDebitCommandHandler(IUserResolver userResolver, IMapper mapper, IAsrContext context, IMediator mediator)
     {
       _userResolver = userResolver;
       _mapper = mapper;
       _context = context;
+      _mediator = mediator;
     }
 
     public async Task<Unit> Handle(DeleteMyDebitCommand request, CancellationToken cancellationToken)
@@ -37,9 +39,24 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
       {
         throw new BusinessException("Recipient not exist");
       }
+      int sendNotId;
+      bool userInDebt = false;
+      if (debit.FromAccountNumber == user.BankAccount.AccountNumber)
+      {
+        sendNotId = (int)debit.ToId;
+        userInDebt = true;
+      }
+      else {
+        sendNotId = (int)debit.FromId;
+      }
 
       await _context.RemoveAsync(debit);
       await _context.SaveChangesAsync();
+
+      string mes = userInDebt?  "you in debt with" : "you make with";
+
+      await _mediator.Send(new MakeNotificationCommand() { Request = new MakeNotificationDto { Description = $"{user.FullName} has deleted debit that {mes} amount of {debit.Amount}", AccountId = sendNotId } });
+
       return Unit.Value;
     }
   }
