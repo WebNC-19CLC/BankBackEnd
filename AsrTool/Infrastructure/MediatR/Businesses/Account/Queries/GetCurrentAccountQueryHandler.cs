@@ -37,6 +37,7 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Queries
         FullName = currentUser.FullName,
         AccountNumber = bankAccount?.AccountNumber,
         Balance = bankAccount?.Balance,
+        IsActive = currentUser.Active,
         Email = currentUser.Email,
         Role = currentUser.Role.Name,
         BankAccountId = bankAccount?.Id,

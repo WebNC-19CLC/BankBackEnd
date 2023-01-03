@@ -32,6 +32,7 @@ using Microsoft.Extensions.Options;
 using Serilog;
 using Microsoft.AspNetCore.Builder;
 using AsrTool.Infrastructure.Filters;
+using AsrTool.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 var DevAllowSpecificOrigins = "DevAllowSpecificOrigins";
@@ -58,6 +59,7 @@ var appSettings = appSettingsSection.Get<AppSettings>();
 // SERVICES
 builder.Services.AddAuthorizers();
 builder.Services.AddMediatR(Assembly.GetAssembly(typeof(Program))!);
+builder.Services.AddSignalR();
 
 builder.Services.AddHttpClient();
 builder.Services.AddControllersWithViews();
@@ -120,6 +122,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, AuthorizationPolicyProvider>();
 builder.Services.AddSingleton<ILdapConnector, LdapConnector>();
 builder.Services.AddScoped<IUserManager, UserManager>();
+builder.Services.AddScoped<MessageHub>();
 
 
 // DB dbContext
@@ -174,6 +177,12 @@ if (!IsSeeded(app).RunAwait())
 {
   SeedData(app).RunAwait();
 }
+
+app.UseEndpoints(endpoints =>
+{
+  endpoints.MapControllers();
+  endpoints.MapHub<MessageHub>("notification");
+});
 
 app.MapControllerRoute(
     name: "default",

@@ -16,7 +16,7 @@
       
     }
 
-    public static readonly string[] TestAccounts = { "tai", "anh", "admin", "employee" };
+    public static readonly string[] TestAccounts = { "tai", "anh", "admin", "employee", "anhaccount" };
 
     public struct TestAccount {
       public const string Tai = "tai";

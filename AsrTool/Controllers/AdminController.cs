@@ -4,9 +4,11 @@ using AsrTool.Infrastructure.MediatR.Businesses.Account.Command;
 using AsrTool.Infrastructure.MediatR.Businesses.Role.Commands;
 using AsrTool.Infrastructure.MediatR.Businesses.User.Commands;
 using AsrTool.Infrastructure.MediatR.Businesses.User.Queries;
+using AsrTool.Infrastructure.MediatR.Businesses.Admin.Command;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using AsrTool.Infrastructure.MediatR.Businesses.Admin.Queries;
 
 namespace AsrTool.Controllers
 {
@@ -70,6 +72,19 @@ namespace AsrTool.Controllers
     public async Task<BankAccountDto> CreateEmployeeAccount([FromBody] CreateAccountDto request)
     {
       return await Mediator.Send(new CreateEmployeeAccountCommand { Request = request });
+    }
+
+    [HttpPost("set-user-active-status")]
+    public async Task SetActiveStatus([FromBody] SetActiveStatusDto request)
+    {
+      await Mediator.Send(new SetUserActiveStatusCommand { Request = request });
+    }
+
+
+    [HttpPost("list-transactions")]
+    public async Task<ICollection<TransactionDto>> ListTransactions([FromBody] ListTransactionFilter filter)
+    {
+      return await Mediator.Send(new ListTransactionQuery { Filter = filter });
     }
   }
 }

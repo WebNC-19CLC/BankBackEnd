@@ -41,13 +41,12 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
       if (request.MakeTransactionDto.ChargeReceiver)
       {
         from.Balance = from.Balance - request.MakeTransactionDto.Amount;
-        to.Balance = from.Balance + request.MakeTransactionDto.Amount - Constants.Fee.TransactionFee;
+        to.Balance = to.Balance + request.MakeTransactionDto.Amount - Constants.Fee.TransactionFee;
 
       }
       else {
         from.Balance = from.Balance - request.MakeTransactionDto.Amount - Constants.Fee.TransactionFee;
-        to.Balance = from.Balance + request.MakeTransactionDto.Amount ;
-
+        to.Balance = to.Balance + request.MakeTransactionDto.Amount ;
       }
 
       from.OTP.Status = Domain.Enums.OTPStatus.Used;

@@ -42,7 +42,7 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
       var recipient = new Recipient
       {
         AccountNumber = request.Request.AccountNumber,
-        SuggestedName = request.Request.SuggestedName != null ? request.Request.SuggestedName : bankAccountRecp.FullName,
+        SuggestedName = request.Request.SuggestedName != null && request.Request.SuggestedName != String.Empty ? request.Request.SuggestedName : bankAccountRecp.FullName,
         BankDestinationId = request.Request.BankDestinationId,
       };
 

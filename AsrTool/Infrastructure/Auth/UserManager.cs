@@ -50,7 +50,7 @@ namespace AsrTool.Infrastructure.Auth
           throw new UnauthorizerException("Password is not correct");
         }
 
-        if (matchPassword)
+        if (matchPassword && user.Active)
         {
           var domainUserName = $"{username}";
           _logger.LogInformation($"--------------> Signed in as {domainUserName} <----------------");
@@ -99,6 +99,7 @@ namespace AsrTool.Infrastructure.Auth
       var user = await _cache.GetEmployeeCachingItem($"{username}".ToUpperInvariant());
       return new ShortUserDetail
       {
+        Id = user.Id,
         Email = user.Email,
         Identifier = username,
         Name = username
@@ -196,6 +197,8 @@ namespace AsrTool.Infrastructure.Auth
 
     private class ShortUserDetail
     {
+      public int Id { get; set; }
+
       public string Identifier { get; set; }
 
       public string Name { get; set; }
