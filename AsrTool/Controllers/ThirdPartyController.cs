@@ -1,4 +1,6 @@
 ﻿using AsrTool.Dtos;
+using AsrTool.Infrastructure.Filters;
+using AsrTool.Infrastructure.MediatR.Businesses.ThirdParty.Command;
 using AsrTool.Infrastructure.MediatR.Businesses.ThirdParty.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -17,20 +19,37 @@ namespace AsrTool.Controllers
 
         [HttpGet("customers/{AccountNumber}")]
         //[Authorize(Policy = "PRE:ThirdPartyReadApiPolicy")]
-        public async Task<AccountDto> GetCustomerByAccountNumber([FromRoute] string accountNumber)
+        public async Task<AccountDto> GetCustomerByAccountNumber([FromRoute] string AccountNumber)
         {
             var result = await Mediator.Send(new GetCustomerInfoQuery
             {
-                AccountNumber = accountNumber
+                AccountNumber = AccountNumber
             });
             return result;
         }
 
         [HttpPost("transactions")]
         //[Authorize(Policy = "PRE:ThirdPartyTransactionApiPolicy")]
-        public async Task<List<AccountDto>> MakeTransaction([FromBody]  SelfReceiveDto selfReceiveDto)
+        public async Task<TransactionDto> MakeTransaction([FromBody]  MakeTransactionDto makeTransactionDto,
+            [FromHeader(Name = "BankSourceId")] string bankSourceId)
         {
-            return null;
+            var result = await Mediator.Send(new ReceiveTransactionCommand
+            {
+                makeTransaction = makeTransactionDto,
+                bankSourceId = int.Parse(bankSourceId),
+            });
+            return result;
+        }
+
+        [HttpPut("transactions/{transactionId}")]
+        //[Authorize(Policy = "PRE:ThirdPartyTransactionApiPolicy")]
+        public async Task<TransactionDto> CompleteTransaction([FromRoute] int transactionId)
+        {
+            var result = await Mediator.Send(new CompleteTransactionCommand
+            {
+                Id = transactionId
+            });
+            return result;
         }
 
     }
