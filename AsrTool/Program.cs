@@ -148,11 +148,10 @@ app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseCors(DevAllowSpecificOrigins);
 
-app.UseAuthentication();
-
 app.UseWhen(context => !context.Request.Path.StartsWithSegments("/api/thirdparty"),
     builder =>
     {
+        app.UseAuthentication();
         builder.UseMiddleware<CookieOnlyAuthenticationMiddleware>();
         builder.UseCookiePolicy();
     });

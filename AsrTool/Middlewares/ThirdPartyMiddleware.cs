@@ -30,6 +30,7 @@ namespace AsrTool.Middlewares
 
         public async Task Invoke(HttpContext httpContext, IAsrContext asrContext)
         {
+
             if (!httpContext.Request.Headers.TryGetValue(SignatureHeader, out var signature))
             {
                 httpContext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
@@ -111,7 +112,7 @@ namespace AsrTool.Middlewares
                 {
                     RSAParameters pKey = EncryptionHelper.ConvertStringToRSAKey(bank.DecryptRsaPrivateKey);
 
-                    string message = EncryptionHelper.RSAEncryption(signature.ToString(), pKey);
+                    string message = EncryptionHelper.RSADecryption(signature.ToString(), pKey);
 
                     if (!from.ToString().Equals(message.ToString()))
                     {

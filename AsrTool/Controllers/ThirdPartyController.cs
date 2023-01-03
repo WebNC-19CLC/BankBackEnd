@@ -19,11 +19,11 @@ namespace AsrTool.Controllers
 
         [HttpGet("customers/{AccountNumber}")]
         //[Authorize(Policy = "PRE:ThirdPartyReadApiPolicy")]
-        public async Task<AccountDto> GetCustomerByAccountNumber([FromRoute] string accountNumber)
+        public async Task<AccountDto> GetCustomerByAccountNumber([FromRoute] string AccountNumber)
         {
             var result = await Mediator.Send(new GetCustomerInfoQuery
             {
-                AccountNumber = accountNumber
+                AccountNumber = AccountNumber
             });
             return result;
         }
@@ -43,11 +43,11 @@ namespace AsrTool.Controllers
 
         [HttpPut("transactions/{transactionId}")]
         //[Authorize(Policy = "PRE:ThirdPartyTransactionApiPolicy")]
-        public async Task<TransactionDto> CompleteTransaction([FromRoute] int id)
+        public async Task<TransactionDto> CompleteTransaction([FromRoute] int transactionId)
         {
             var result = await Mediator.Send(new CompleteTransactionCommand
             {
-                Id = id
+                Id = transactionId
             });
             return result;
         }

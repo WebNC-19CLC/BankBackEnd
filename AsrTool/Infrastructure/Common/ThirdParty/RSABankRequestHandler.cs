@@ -23,7 +23,7 @@ namespace AsrTool.Infrastructure.Common.ThirdParty
         public override HttpClient CommandCompleteTransaction(string toAccountNumber)
         {
             var client = new HttpClient();
-            client.BaseAddress = new Uri(HOST + COMMAND_COMPLETE_TRANSACTION_PATH + toAccountNumber);
+            client.BaseAddress = new Uri(HOST);
 
             client.DefaultRequestHeaders.Clear();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -47,7 +47,7 @@ namespace AsrTool.Infrastructure.Common.ThirdParty
         public override HttpClient CommandMakeTransaction(MakeTransactionDto makeNotificationDto)
         {
             var client = new HttpClient();
-            client.BaseAddress = new Uri(HOST + COMMAND_MAKE_TRANSACTION_PATH);
+            client.BaseAddress = new Uri(HOST);
 
             client.DefaultRequestHeaders.Clear();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -71,8 +71,8 @@ namespace AsrTool.Infrastructure.Common.ThirdParty
         public override HttpClient QueryInfo(string accountNumber)
         {
             var client = new HttpClient();
-            client.BaseAddress = new Uri(HOST + QUERY_INFO_PATH + accountNumber);
-
+            client.BaseAddress = new Uri(HOST);
+            
             client.DefaultRequestHeaders.Clear();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 

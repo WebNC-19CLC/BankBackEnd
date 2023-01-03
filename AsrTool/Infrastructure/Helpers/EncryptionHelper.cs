@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using System.Net.WebSockets;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using AsrTool.Infrastructure.Domain;
@@ -26,7 +27,9 @@ namespace AsrTool.Infrastructure.Helpers
             //we need a deserializer
             var xs = new System.Xml.Serialization.XmlSerializer(typeof(RSAParameters));
             //get the object back from the stream
-            return (RSAParameters)xs.Deserialize(sr);
+            var publicKey =  (RSAParameters)xs.Deserialize(sr);
+
+            return publicKey;
         }
 
         public static string RSAEncryption(string plainText, RSAParameters rsaPublicKey)

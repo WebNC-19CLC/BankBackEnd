@@ -33,10 +33,10 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
                 throw new NotFoundException();
             }
 
-            var to = await _asrContext.Get<Domain.Entities.BankAccount>().SingleOrDefaultAsync(x => x.AccountNumber == request.MakeTransactionDto.ToAccountNumber);
-
-            if (to != null)
+            if (request.MakeTransactionDto.BankId == null)
             {
+                var to = await _asrContext.Get<Domain.Entities.BankAccount>().SingleOrDefaultAsync(x => x.AccountNumber == request.MakeTransactionDto.ToAccountNumber);
+
                 if (request.MakeTransactionDto.Amount > from.Balance)
                 {
                     throw new Exception("Not enough balance");
@@ -100,6 +100,7 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
                     FromId = from.Id,
                     FromAccountNumber = from.AccountNumber,
                     ToAccountNumber = request.MakeTransactionDto.ToAccountNumber,
+                    BankSourceId = bank.Id,
                     ToId = null,
                     Amount = request.MakeTransactionDto.Amount,
                     Type = request.MakeTransactionDto.Type,
@@ -123,7 +124,7 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
             var bodyJson = JsonConvert.SerializeObject(makeTransaction);
             var payload = new StringContent(bodyJson, Encoding.UTF8, "application/json");
 
-            HttpResponseMessage respone = await client.PostAsync("", payload);
+            HttpResponseMessage respone = await client.PostAsync("/api/thirdparty/transactions", payload);
 
             if (!respone.IsSuccessStatusCode)
                 throw new BusinessException("Failed to make transaction");
@@ -146,7 +147,7 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
         {
             var client = requestHandler.CommandCompleteTransaction(transactionId);
 
-            HttpResponseMessage respone = await client.PutAsync("",null);
+            HttpResponseMessage respone = await client.PutAsync("/api/thirdparty/transactions/" + transactionId, null);
 
             if (!respone.IsSuccessStatusCode)
                 throw new BusinessException("Failed to make transaction");
