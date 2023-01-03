@@ -95,51 +95,62 @@ namespace AsrTool.Middlewares
         {
             bool isAuthorized = true;
 
-            if (httpContext.Request.Method == HttpMethod.Get.Method)
+            try
             {
-                string hashedToken = EncryptionHelper.ComputeHash(bank.DecryptPublicKey, dataString);
 
-                if (!signature.ToString().Equals(hashedToken))
+                if (httpContext.Request.Method == HttpMethod.Get.Method)
                 {
-                    isAuthorized = false;
+                    string hashedToken = EncryptionHelper.ComputeHash(bank.DecryptPublicKey, dataString);
+
+                    if (!signature.ToString().Equals(hashedToken))
+                    {
+                        isAuthorized = false;
+                    }
                 }
+                else if (httpContext.Request.Method == HttpMethod.Post.Method || httpContext.Request.Method == HttpMethod.Put.Method)
+                {
+                    RSAParameters pKey = EncryptionHelper.ConvertStringToRSAKey(bank.DecryptRsaPrivateKey);
+
+                    string message = EncryptionHelper.RSAEncryption(signature.ToString(), pKey);
+
+                    if (!from.ToString().Equals(message.ToString()))
+                    {
+                        isAuthorized = false;
+                    }
+                    else
+                    {
+                        httpContext.Request.Headers.Add("BankSourceId", bank.Id.ToString());
+
+                        Action<HttpResponse, Bank> SignSignature = ResponseHandler(bank.Name);
+                        SignSignature(httpContext.Response, bank);
+                    }
+                }
+
+                return isAuthorized;
             }
-            else if (httpContext.Request.Method == HttpMethod.Post.Method || httpContext.Request.Method == HttpMethod.Put.Method)
+            catch (CryptographicException e)
             {
-                RSAParameters pKey = EncryptionHelper.ConvertStringToRSAKey(bank.DecryptRsaPrivateKey);
-
-                string message = EncryptionHelper.RSAEncryption(signature.ToString(), pKey);
-
-                if (!from.ToString().Equals(message.ToString()))
-                {
-                    isAuthorized = false;
-                }
-                else
-                {
-                    Action<HttpResponse,Bank> SignSignature = ResponseHandler(bank.Name);
-                    SignSignature(httpContext.Response,bank);
-                }
+                isAuthorized = false;
             }
-
             return isAuthorized;
         }
 
-        Action<HttpResponse,Bank> ResponseHandler(string bankName)
+        Action<HttpResponse, Bank> ResponseHandler(string bankName)
         {
             switch (bankName)
             {
                 case "bank1":
-                    return ResponseHanlderBank1;
+                    return RSAResponseHandler;
                 case "bank2":
-                    return ResponseHanlderBank2;
+                    return RSAResponseHandler;
                 default:
-                    return ResponseHanlderBank1;
+                    return RSAResponseHandler;
             }
 
         }
 
         // RSA Security
-        private static void ResponseHanlderBank1(HttpResponse response,Bank bank)
+        private static void RSAResponseHandler(HttpResponse response, Bank bank)
         {
             RSAParameters publicKey = EncryptionHelper.ConvertStringToRSAKey(bank.EncryptRsaPublicKey);
 
@@ -150,7 +161,7 @@ namespace AsrTool.Middlewares
         }
 
         // PGP Security
-        private static void ResponseHanlderBank2(HttpResponse response, Bank bank)
+        private static void PGPResponseHandler(HttpResponse response, Bank bank)
         {
 
         }

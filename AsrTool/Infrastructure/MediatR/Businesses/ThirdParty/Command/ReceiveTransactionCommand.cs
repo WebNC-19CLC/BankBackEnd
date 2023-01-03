@@ -5,6 +5,7 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.ThirdParty.Command
 {
     public class ReceiveTransactionCommand : IRequest<TransactionDto>
     {
-        public MakeTransactionDto MakeTransaction { get; set; }
+        public MakeTransactionDto makeTransaction { get; set; }
+        public int bankSourceId;
     }
 }

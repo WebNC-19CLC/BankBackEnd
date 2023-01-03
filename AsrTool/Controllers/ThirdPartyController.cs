@@ -30,11 +30,13 @@ namespace AsrTool.Controllers
 
         [HttpPost("transactions")]
         //[Authorize(Policy = "PRE:ThirdPartyTransactionApiPolicy")]
-        public async Task<TransactionDto> MakeTransaction([FromBody]  MakeTransactionDto makeTransactionDto)
+        public async Task<TransactionDto> MakeTransaction([FromBody]  MakeTransactionDto makeTransactionDto,
+            [FromHeader(Name = "BankSourceId")] string bankSourceId)
         {
             var result = await Mediator.Send(new ReceiveTransactionCommand
             {
-                MakeTransaction = makeTransactionDto
+                makeTransaction = makeTransactionDto,
+                bankSourceId = int.Parse(bankSourceId),
             });
             return result;
         }
