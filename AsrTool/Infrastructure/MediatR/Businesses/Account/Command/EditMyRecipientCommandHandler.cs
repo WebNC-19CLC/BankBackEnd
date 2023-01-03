@@ -30,7 +30,7 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
         throw new NotFoundException<Recipient>(request.Request.Id);
       }
 
-      recipient.SuggestedName = request.Request.SuggestedName;
+      recipient.SuggestedName = request.Request.SuggestedName != string.Empty || request.Request.SuggestedName != null ? request.Request.SuggestedName : recipient.SuggestedName;
       recipient.AccountNumber = request.Request.AccountNumber;
       recipient.BankDestinationId = request.Request.BankDestinationId;
 

@@ -24,10 +24,19 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
 
     public async Task<Unit> Handle(GenerateOTPCommand request, CancellationToken cancellationToken)
     {
-      var user = await _asrContext.Get<Employee>().Include(x => x.BankAccount).ThenInclude(x => x.OTP)
-        .FirstOrDefaultAsync(x => x.Id == _userResolver.CurrentUser.Id);
+      Employee? user;
 
-      if (user.BankAccount == null) {
+      if (request.Username == null)
+      {
+        user = await _asrContext.Get<Employee>().Include(x => x.BankAccount).ThenInclude(x => x.OTP)
+          .FirstOrDefaultAsync(x => x.Id == _userResolver.CurrentUser.Id);
+      }
+      else {
+        user = await _asrContext.Get<Employee>().Include(x => x.BankAccount).ThenInclude(x => x.OTP)
+          .FirstOrDefaultAsync(x => x.Username == request.Username);
+      }
+
+      if (user?.BankAccount == null) {
         throw new BusinessException("This account doesnt have bank account");
       }
 

@@ -34,7 +34,7 @@ namespace AsrTool.Controllers
       await Mediator.Send(new MakeTransactionCommand() { MakeTransactionDto = dto });
     }
 
-    [HttpGet("transactions/{id}")]
+    [HttpGet("user/{id}/transactions")]
     public async Task<List<TransactionDto>> GetTransaction([FromRoute] int id)
     {
       return await Mediator.Send(new GetTransactionQuery() { AccountId = id });

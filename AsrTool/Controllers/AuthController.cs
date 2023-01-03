@@ -1,4 +1,5 @@
 ﻿using AsrTool.Dtos;
+using AsrTool.Infrastructure.MediatR.Businesses.Account.Command;
 using AsrTool.Infrastructure.MediatR.Businesses.User.Commands;
 using AsrTool.Infrastructure.MediatR.Businesses.User.Queries;
 using MediatR;
@@ -58,6 +59,23 @@ namespace AsrTool.Controllers
     public async Task Logout()
     {
       await Mediator.Send(new LogoutCommand() { HttpContext = HttpContext });
+    }
+
+
+    [HttpPost("generate-otp-forgot-password")]
+    [AllowAnonymous]
+    [IgnoreAntiforgeryToken]
+    public async Task GenerateOTPForgotPassword(ForgotPasswordGenOTPDto dto)
+    {
+      await Mediator.Send(new GenerateOTPCommand() {Username = dto.Username });
+    }
+
+    [HttpPost("forgot-password")]
+    [AllowAnonymous]
+    [IgnoreAntiforgeryToken]
+    public async Task ForgotPassword(ForgotPasswordDto dto)
+    {
+      await Mediator.Send(new ForgotPasswordCommand() { Request = dto });
     }
   }
 }

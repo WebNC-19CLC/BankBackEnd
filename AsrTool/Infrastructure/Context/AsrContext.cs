@@ -279,7 +279,7 @@ namespace AsrTool.Infrastructure.Context
         }
         else if (entityEntry.State == EntityState.Modified)
         {
-          entity.ModifiedBy = _userResolver.CurrentUser.Username;
+          entity.ModifiedBy = _userResolver.CurrentUser.Username != null ? _userResolver.CurrentUser.Username : "SYSTEM";
           entity.ModifiedOn = now;
         }
       }

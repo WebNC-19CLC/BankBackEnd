@@ -34,7 +34,7 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
         throw new NotFoundException();
       }
 
-      if (request.MakeTransactionDto.Amount > from.Balance) {
+      if (request.MakeTransactionDto.Amount + Constants.Fee.TransactionFee > from.Balance) {
         throw new Exception("Not enough balance");
       }
 
