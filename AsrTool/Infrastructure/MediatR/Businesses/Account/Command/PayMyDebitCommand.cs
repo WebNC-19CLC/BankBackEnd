@@ -5,5 +5,7 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
   public class PayMyDebitCommand : IRequest
   {
     public int Id { get; set; }
+
+    public string OTP { get; set; }
   }
 }

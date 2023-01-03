@@ -25,12 +25,32 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
     {
       var debit = await _asrContext.Get<Debit>().SingleOrDefaultAsync(x => x.Id == request.Id);
 
-      var user = await _asrContext.Get<Employee>().Include(x => x.BankAccount).SingleOrDefaultAsync(x => x.Id == _userResolver.CurrentUser.Id);
+      var user = await _asrContext.Get<Employee>().Include(x => x.BankAccount).ThenInclude(x => x.OTP).SingleOrDefaultAsync(x => x.Id == _userResolver.CurrentUser.Id);
 
-      var targetAccouunt = await _asrContext.Get<BankAccount>().Include(x => x.User).SingleOrDefaultAsync(x => x.Id == _userResolver.CurrentUser.Id);
+      var targetAccouunt = await _asrContext.Get<BankAccount>().Include(x => x.User).SingleOrDefaultAsync(x => x.Id == debit.ToId);
 
       if (debit.FromAccountNumber != user?.BankAccount?.AccountNumber) {
         throw new UnauthorizerException("Access Denied");
+      }
+
+      if (debit.IsPaid)
+      {
+        throw new BusinessException("Debit is already paid");
+      }
+
+      if (!(user.BankAccount.OTP.Code == request.OTP))
+      {
+        throw new BusinessException("OTP is not match");
+      }
+
+      if (user.BankAccount.OTP.Status == Domain.Enums.OTPStatus.Used)
+      {
+        throw new BusinessException("OTP is used");
+      }
+
+      if (!(DateTime.Compare(user.BankAccount.OTP.ExpiredAt, DateTime.UtcNow) > 0))
+      {
+        throw new BusinessException("Expired OTP");
       }
 
       var transaction = new MakeTransactionDto
@@ -47,6 +67,11 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
       await _mediator.Send(new MakeTransactionCommand() { MakeTransactionDto = transaction });
 
       await _mediator.Send(new MakeNotificationCommand() { Request = new MakeNotificationDto {Description = $"{user.FullName} pay you {transaction.Amount} of debit.", AccountId = targetAccouunt.Id } });
+
+      debit.IsPaid = true;
+
+      await _asrContext.UpdateAsync(debit);
+      await _asrContext.SaveChangesAsync();
 
       return Unit.Value;
     }

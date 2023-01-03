@@ -4,7 +4,7 @@
   {
     public string AccountNumber { get; set; }
 
-    public string SuggestedName { get; set; }
+    public string? SuggestedName { get; set; }
 
     public int? BankDestinationId { get; set; }
   }

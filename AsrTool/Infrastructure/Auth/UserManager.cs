@@ -99,6 +99,7 @@ namespace AsrTool.Infrastructure.Auth
       var user = await _cache.GetEmployeeCachingItem($"{username}".ToUpperInvariant());
       return new ShortUserDetail
       {
+        Id = user.Id,
         Email = user.Email,
         Identifier = username,
         Name = username
@@ -196,6 +197,8 @@ namespace AsrTool.Infrastructure.Auth
 
     private class ShortUserDetail
     {
+      public int Id { get; set; }
+
       public string Identifier { get; set; }
 
       public string Name { get; set; }

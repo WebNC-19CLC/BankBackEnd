@@ -30,7 +30,8 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
       var user = await _context.Get<Employee>().SingleOrDefaultAsync(x => x.Id == _userResolver.CurrentUser.Id);
       var bankAccount = await _context.Get<BankAccount>().Include(x => x.Recipients).SingleOrDefaultAsync(x => x.Id == user.BankAccountId);
 
-      if (bankAccount == null) {
+      if (bankAccount == null)
+      {
         throw new BusinessException("This account does not have bank account.");
       }
 
@@ -50,7 +51,8 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
         toId = targetAccount.Id;
         toAccountNumber = targetAccount.AccountNumber;
       }
-      else {
+      else
+      {
         fromId = targetAccount.Id;
         fromAccountNumber = targetAccount.AccountNumber;
         Debter = targetAccount.User.FullName;
@@ -64,6 +66,7 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
         FromAccountNumber = fromAccountNumber,
         ToId = toId,
         ToAccountNumber = toAccountNumber,
+        Description = request.Request.Description,
         BankDestinationId = request.Request.BankDestinationId,
         Amount = request.Request.Amount,
         DateDue = request.Request.DateDue
@@ -76,7 +79,10 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
         .Include(x => x.To).ThenInclude(x => x.User)
         .SingleOrDefaultAsync(x => x.Id == debit.Id);
 
-      await _mediator.Send(new MakeNotificationCommand() { Request = new MakeNotificationDto { Description = $"You are int debt of {Debter} for {debit.Amount}", AccountId = (int)fromId } }) ;
+      if (request.Request.SelfInDebt)
+        await _mediator.Send(new MakeNotificationCommand() { Request = new MakeNotificationDto { Description = $"{Debter} are in debt of you for {debit.Amount}", AccountId = (int)toId } });
+      else
+        await _mediator.Send(new MakeNotificationCommand() { Request = new MakeNotificationDto { Description = $"You are in debt of {Debter} for {debit.Amount}", AccountId = (int)fromId } });
 
       return new DebitDto
       {
@@ -84,8 +90,8 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
         ToAccountNumber = resultToReturn.ToAccountNumber,
         FromUser = resultToReturn?.From?.User?.FullName,
         ToUser = resultToReturn?.To?.User?.FullName,
-        BankDestinationId= resultToReturn?.BankDestinationId,
-        BankSourceId= resultToReturn?.BankSourceId,
+        BankDestinationId = resultToReturn?.BankDestinationId,
+        BankSourceId = resultToReturn?.BankSourceId,
         Amount = resultToReturn.Amount,
         DateDue = resultToReturn.DateDue,
         IsPaid = resultToReturn.IsPaid,

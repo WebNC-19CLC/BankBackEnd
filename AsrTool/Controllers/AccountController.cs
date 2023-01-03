@@ -99,9 +99,9 @@ namespace AsrTool.Controllers
     }
 
     [HttpPost("me/debits/pay")]
-    public async Task AddNewDebit([FromBody] int id)
+    public async Task AddNewDebit([FromBody] PayDebitDto dto)
     {
-      await Mediator.Send(new PayMyDebitCommand() { Id = id });
+      await Mediator.Send(new PayMyDebitCommand() { Id = dto.Id, OTP = dto.OTP });
     }
 
     [HttpPost("me/searchAccountNativeBank")]
@@ -114,6 +114,12 @@ namespace AsrTool.Controllers
     public async Task GenerateOTP()
     {
       await Mediator.Send(new GenerateOTPCommand() { });
+    }
+
+    [HttpGet("me/notifications")]
+    public async Task<ICollection<NotifationDto>> GetMyNotifications()
+    {
+      return await Mediator.Send(new GetMyNotificationsQuery());
     }
   }
 }
