@@ -31,9 +31,6 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.ThirdParty.Command
                 throw new NotFoundException<BankAccount>(request.makeTransaction.ToAccountNumber);
             }
 
-            //to.Balance = to.Balance + request.makeTransaction.Amount;
-            //await _context.UpdateAsync(to);
-
             var transaction = new Transaction
             {
                 BankSourceId = request.bankSourceId,
@@ -49,8 +46,8 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.ThirdParty.Command
                 TransactionFee = Constants.Fee.TransactionFee,
             };
 
-            //await _context.AddRangeAsync(transaction);
-            //await _context.SaveChangesAsync();
+            await _context.AddRangeAsync(transaction);
+            await _context.SaveChangesAsync();
 
             return _mapper.Map<Transaction, TransactionDto>(transaction);
         }

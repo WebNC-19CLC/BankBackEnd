@@ -4,8 +4,8 @@ namespace AsrTool.Infrastructure.Common.ThirdParty
 {
     public interface IThirdPartyRequestHandler
     {
-        HttpClient QueryInfo(string accountNumber);
-        HttpClient CommandMakeTransaction(MakeTransactionDto makeNotificationDto);
-        HttpClient CommandCompleteTransaction(string transactionId);
+        Task<AccountDto> QueryInfo(string accountNumber);
+        Task<TransactionDto> CommandMakeTransaction(MakeTransactionDto makeNotificationDto);
+        Task CommandCompleteTransaction(string transactionId);
     }
 }

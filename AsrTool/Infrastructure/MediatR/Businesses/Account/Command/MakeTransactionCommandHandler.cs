@@ -85,11 +85,11 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
                     throw new NotFoundException<Domain.Entities.Bank>(request.MakeTransactionDto.BankId.Value);
                 }
 
-                IThirdPartyRequestHandler RequestHandler = SelectRequestHanlder(bank);
+                IThirdPartyRequestHandler RequestHandler = ThirdPartyRequestHandlerFactory.GetThirdPartyRequestHandler(bank);
 
-                TransactionDto assosiatedBankTransaction =  await CommandMakeTransactionInAssociatedBank(RequestHandler, request.MakeTransactionDto);
+                TransactionDto assosiatedBankTransaction = await RequestHandler.CommandMakeTransaction(request.MakeTransactionDto);
                 
-                await CommandCompleteTransaction(RequestHandler,assosiatedBankTransaction.Id.ToString());
+                await RequestHandler.CommandCompleteTransaction(assosiatedBankTransaction.Id.ToString());
 
                 from.Balance = from.Balance - request.MakeTransactionDto.Amount - Constants.Fee.TransactionFee;
 
@@ -117,54 +117,5 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
 
         }
 
-        private async Task<TransactionDto> CommandMakeTransactionInAssociatedBank(IThirdPartyRequestHandler requestHandler,MakeTransactionDto makeTransaction)
-        {
-            var client = requestHandler.CommandMakeTransaction(makeTransaction);
-
-            var bodyJson = JsonConvert.SerializeObject(makeTransaction);
-            var payload = new StringContent(bodyJson, Encoding.UTF8, "application/json");
-
-            HttpResponseMessage respone = await client.PostAsync("/api/thirdparty/transactions", payload);
-
-            if (!respone.IsSuccessStatusCode)
-                throw new BusinessException("Failed to make transaction");
-
-            var responseObject = respone.Content.ReadAsStringAsync().Result;
-
-            TransactionDto transaction = JsonConvert.DeserializeObject<TransactionDto>(responseObject);
-
-            // Valid signature 
-            var isValidSignature = true;
-
-            if (!isValidSignature)
-            {
-                throw new BusinessException("Failed to make transaction");
-            }
-            return transaction;
-        }
-
-        private async Task CommandCompleteTransaction(IThirdPartyRequestHandler requestHandler, string transactionId)
-        {
-            var client = requestHandler.CommandCompleteTransaction(transactionId);
-
-            HttpResponseMessage respone = await client.PutAsync("/api/thirdparty/transactions/" + transactionId, null);
-
-            if (!respone.IsSuccessStatusCode)
-                throw new BusinessException("Failed to make transaction");
-        }
-
-
-        public IThirdPartyRequestHandler SelectRequestHanlder(Domain.Entities.Bank bank)
-        {
-            switch (bank.Name)
-            {
-                case "bank1":
-                    return new RSABankRequestHandler(bank);
-                case "bank2":
-                    return new RSABankRequestHandler(bank);
-                default:
-                    return new RSABankRequestHandler(bank);
-            }
-        }
     }
 }

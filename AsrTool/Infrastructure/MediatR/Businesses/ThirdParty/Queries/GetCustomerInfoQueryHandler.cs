@@ -23,12 +23,18 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.ThirdParty.Queries
 
         public async Task<AccountDto> Handle(GetCustomerInfoQuery request, CancellationToken cancellationToken)
         {
-            var account = await _context.Get<BankAccount>().SingleOrDefaultAsync(x => x.AccountNumber == request.AccountNumber);
+            var account = await _context.Get<BankAccount>().Include(x => x.User).SingleOrDefaultAsync(x => x.AccountNumber == request.AccountNumber);
             if(account == null)
             {
                 throw new NotFoundException<BankAccount>(request.AccountNumber);
             }
-            var result =  _mapper.Map<BankAccount, AccountDto>(account);
+
+            var result = new AccountDto
+            {
+                AccountNumber = account.AccountNumber,
+                Balance = account.Balance,
+                FullName = account.User.FullName,
+            };
             return result;
         }
     }

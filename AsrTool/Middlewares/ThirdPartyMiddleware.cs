@@ -13,16 +13,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Primitives;
 using NetTopologySuite.IO;
+using static AsrTool.Constants;
 
 namespace AsrTool.Middlewares
 {
     public class ThirdPartyMiddleware
     {
         private readonly RequestDelegate _next;
-        private const string SignatureHeader = "XApiKey";
-        private const string TimeHeader = "TimeStamp";
-        private const string FromHeader = "BankSource";
-
         public ThirdPartyMiddleware(RequestDelegate next)
         {
             _next = next;
@@ -30,20 +27,19 @@ namespace AsrTool.Middlewares
 
         public async Task Invoke(HttpContext httpContext, IAsrContext asrContext)
         {
-
-            if (!httpContext.Request.Headers.TryGetValue(SignatureHeader, out var signature))
+            if (!httpContext.Request.Headers.TryGetValue(BankAuthenticateHeaderRequirement.SignatureHeader, out var signature))
             {
                 httpContext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
                 await httpContext.Response.WriteAsync("Token was not provided");
                 return;
             }
-            if (!httpContext.Request.Headers.TryGetValue(TimeHeader, out var sendTime))
+            if (!httpContext.Request.Headers.TryGetValue(BankAuthenticateHeaderRequirement.TimeHeader, out var sendTime))
             {
                 httpContext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
                 await httpContext.Response.WriteAsync("Request send time was not provided");
                 return;
             }
-            if (!httpContext.Request.Headers.TryGetValue(FromHeader, out var from))
+            if (!httpContext.Request.Headers.TryGetValue(BankAuthenticateHeaderRequirement.FromHeader, out var from))
             {
                 httpContext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
                 await httpContext.Response.WriteAsync("Bank name was not provided");
@@ -140,10 +136,10 @@ namespace AsrTool.Middlewares
         {
             switch (bankName)
             {
-                case "bank1":
+                case Constants.AssociatedBank.RSA_BANK_NAME:
                     return RSAResponseHandler;
-                case "bank2":
-                    return RSAResponseHandler;
+                case Constants.AssociatedBank.PGP_BANK_NAME:
+                    return PGPResponseHandler;
                 default:
                     return RSAResponseHandler;
             }
@@ -155,7 +151,7 @@ namespace AsrTool.Middlewares
         {
             RSAParameters publicKey = EncryptionHelper.ConvertStringToRSAKey(bank.EncryptRsaPublicKey);
 
-            string signature = EncryptionHelper.RSAEncryption(bank.Name, publicKey);
+            string signature = EncryptionHelper.RSAEncryption(Constants.AssociatedBank.MY_BANK_NAME, publicKey);
 
             response.Headers.Add("XApiKey", signature);
 
