@@ -31,6 +31,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using Serilog;
 using Microsoft.AspNetCore.Builder;
+using AsrTool.Infrastructure.Filters;
 using AsrTool.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -147,11 +148,10 @@ app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseCors(DevAllowSpecificOrigins);
 
-app.UseAuthentication();
-
 app.UseWhen(context => !context.Request.Path.StartsWithSegments("/api/thirdparty"),
     builder =>
     {
+        app.UseAuthentication();
         builder.UseMiddleware<CookieOnlyAuthenticationMiddleware>();
         builder.UseCookiePolicy();
     });
@@ -160,7 +160,7 @@ app.UseWhen(context => !context.Request.Path.StartsWithSegments("/api/thirdparty
 app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/thirdparty"),
     builder =>
     {
-        builder.UseMiddleware<ValidSignatureThirdPartyMiddleware>();
+        builder.UseMiddleware<ThirdPartyMiddleware>();
     });
 
 app.UseRouting();

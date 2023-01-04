@@ -16,6 +16,19 @@
       
     }
 
+        public struct AssociatedBank 
+        {
+            public const string MY_BANK_NAME = "AsrTool";
+            public const string RSA_BANK_NAME = "RSABank";
+            public const string PGP_BANK_NAME = "PGPBank";
+        }
+
+        public struct BankAuthenticateHeaderRequirement{
+            public const string SignatureHeader = "XApiKey";
+            public const string TimeHeader = "TimeStamp";
+            public const string FromHeader = "BankSource";
+    }
+
     public static readonly string[] TestAccounts = { "tai", "anh", "admin", "employee", "anhaccount" };
 
     public struct TestAccount {
