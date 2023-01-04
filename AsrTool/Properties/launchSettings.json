@@ -29,7 +29,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "BankMAIA.PGPG": {
+    "BankMAIA.PGP": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
