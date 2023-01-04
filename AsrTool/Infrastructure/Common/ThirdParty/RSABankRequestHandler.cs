@@ -73,7 +73,7 @@ namespace AsrTool.Infrastructure.Common.ThirdParty
             return transaction;
         }
 
-        public override async Task<AccountDto> QueryInfo(string accountNumber)
+        public override async Task<ShortAccountDto> QueryInfo(string accountNumber)
         {
             var client = new HttpClient();
             client.BaseAddress = new Uri(HOST);

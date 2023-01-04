@@ -19,7 +19,7 @@ namespace AsrTool.Controllers
 
         [HttpGet("customers/{AccountNumber}")]
         //[Authorize(Policy = "PRE:ThirdPartyReadApiPolicy")]
-        public async Task<AccountDto> GetCustomerByAccountNumber([FromRoute] string AccountNumber)
+        public async Task<ShortAccountDto> GetCustomerByAccountNumber([FromRoute] string AccountNumber)
         {
             var result = await Mediator.Send(new GetCustomerInfoQuery
             {

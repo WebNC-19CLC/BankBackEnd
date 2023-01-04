@@ -41,6 +41,6 @@ namespace AsrTool.Infrastructure.Common.ThirdParty
 
         public abstract Task CommandCompleteTransaction(string transactionId);
         public abstract Task<TransactionDto> CommandMakeTransaction(MakeTransactionDto makeNotificationDto);
-        public abstract Task<AccountDto> QueryInfo(string accountNumber);
+        public abstract Task<ShortAccountDto> QueryInfo(string accountNumber);
     }
 }

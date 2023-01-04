@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AsrTool.Infrastructure.MediatR.Businesses.ThirdParty.Queries
 {
-    public class GetCustomerInfoQueryHandler : IRequestHandler<GetCustomerInfoQuery, AccountDto>
+    public class GetCustomerInfoQueryHandler : IRequestHandler<GetCustomerInfoQuery, ShortAccountDto>
     {
         private readonly IMediator _mediator;
         private readonly IAsrContext _context;
@@ -21,7 +21,7 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.ThirdParty.Queries
             _mapper = mapper;
         }
 
-        public async Task<AccountDto> Handle(GetCustomerInfoQuery request, CancellationToken cancellationToken)
+        public async Task<ShortAccountDto> Handle(GetCustomerInfoQuery request, CancellationToken cancellationToken)
         {
             var account = await _context.Get<BankAccount>().Include(x => x.User).SingleOrDefaultAsync(x => x.AccountNumber == request.AccountNumber);
             if(account == null)
@@ -29,10 +29,9 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.ThirdParty.Queries
                 throw new NotFoundException<BankAccount>(request.AccountNumber);
             }
 
-            var result = new AccountDto
+            var result = new ShortAccountDto
             {
                 AccountNumber = account.AccountNumber,
-                Balance = account.Balance,
                 FullName = account.User.FullName,
             };
             return result;
