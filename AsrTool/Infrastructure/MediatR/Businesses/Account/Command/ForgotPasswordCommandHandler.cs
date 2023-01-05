@@ -21,9 +21,9 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
 
     public async Task<Unit> Handle(ForgotPasswordCommand request, CancellationToken cancellationToken)
     {
-      var account = await _context.Get<Employee>().Include(x => x.BankAccount).ThenInclude(x => x.OTP).SingleOrDefaultAsync(x => x.Username == request.Request.Username);
+      var account = await _context.Get<Employee>().SingleOrDefaultAsync(x => x.Username == request.Request.Username);
 
-      if (account == null || account.BankAccount == null) {
+      if (account == null) {
         throw new BusinessException("Account not found");
       }
 
