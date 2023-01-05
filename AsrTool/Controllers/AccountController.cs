@@ -86,10 +86,10 @@ namespace AsrTool.Controllers
       return await Mediator.Send(new GetMyDebitsQuery());
     }
 
-    [HttpDelete("me/debits/{id}")]
-    public async Task DeleteMyDebit([FromRoute] int id)
+    [HttpPost("me/debits/cancel")]
+    public async Task DeleteMyDebit([FromBody] DeleteDebitRequestDto dto)
     {
-      await Mediator.Send(new DeleteMyDebitCommand() { Id = id });
+      await Mediator.Send(new DeleteMyDebitCommand() { Request = dto });
     }
 
     [HttpPost("me/debits")]

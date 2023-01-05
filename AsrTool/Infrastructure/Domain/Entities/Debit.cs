@@ -42,6 +42,8 @@ namespace AsrTool.Infrastructure.Domain.Entities
 
     public bool IsPaid { get; set; } = false;
 
+    public string Status { get; set; } = "Pending";
+
     public DateTime DateDue { get; set; }
   }
 }
