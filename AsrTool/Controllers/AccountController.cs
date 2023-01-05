@@ -16,12 +16,7 @@ namespace AsrTool.Controllers
     {
     }
 
-    [HttpGet]
-    public async Task<List<AccountDto>> GetAccounts()
-    {
-      return await Mediator.Send(new GetAccountsQuery());
-    }
-
+   
     [HttpGet("me")]
     public async Task<AccountDto> GetCurrentAccount()
     {
