@@ -28,7 +28,7 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
     public async Task<DebitDto> Handle(CreateDebitCommand request, CancellationToken cancellationToken)
     {
       var user = await _context.Get<Employee>().SingleOrDefaultAsync(x => x.Id == _userResolver.CurrentUser.Id);
-      var bankAccount = await _context.Get<BankAccount>().Include(x => x.Recipients).SingleOrDefaultAsync(x => x.Id == user.BankAccountId);
+      var bankAccount = await _context.Get<BankAccount>().Include(x => x.User).Include(x => x.Recipients).SingleOrDefaultAsync(x => x.Id == user.BankAccountId);
 
       if (bankAccount == null)
       {
@@ -42,6 +42,7 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
       string? fromAccountNumber;
       string? toAccountNumber;
       string Debter;
+      string Owner;
 
       if (request.Request.SelfInDebt)
       {
@@ -50,6 +51,7 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
         Debter = user.FullName;
         toId = targetAccount.Id;
         toAccountNumber = targetAccount.AccountNumber;
+        Owner = targetAccount.User.FullName;
       }
       else
       {
@@ -58,6 +60,7 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
         Debter = targetAccount.User.FullName;
         toId = bankAccount.Id;
         toAccountNumber = bankAccount.AccountNumber;
+        Owner = bankAccount.User.FullName;
       }
 
       var debit = new Debit
@@ -80,9 +83,9 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
         .SingleOrDefaultAsync(x => x.Id == debit.Id);
 
       if (request.Request.SelfInDebt)
-        await _mediator.Send(new MakeNotificationCommand() { Request = new MakeNotificationDto { Description = $"{Debter} are in debt of you for {debit.Amount}", AccountId = (int)toId } });
+        await _mediator.Send(new MakeNotificationCommand() { Request = new MakeNotificationDto { Description = $"{Debter} are in debt of you for {debit.Amount}. Decription: {debit.Description}", AccountId = (int)toId } });
       else
-        await _mediator.Send(new MakeNotificationCommand() { Request = new MakeNotificationDto { Description = $"You are in debt of {Debter} for {debit.Amount}", AccountId = (int)fromId } });
+        await _mediator.Send(new MakeNotificationCommand() { Request = new MakeNotificationDto { Description = $"You are in debt of {Owner} for {debit.Amount}.  Decription: {debit.Description}", AccountId = (int)fromId } });
 
       return new DebitDto
       {
