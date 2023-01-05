@@ -18,8 +18,8 @@
 
         public struct AssociatedBank 
         {
-            public const string MY_BANK_NAME = "AsrTool";
-            public const string RSA_BANK_NAME = "RSABank";
+            public const string MY_BANK_NAME = "RSABank";
+            public const string RSA_BANK_NAME = "AsrTool";
             public const string PGP_BANK_NAME = "PGPBank";
         }
 
