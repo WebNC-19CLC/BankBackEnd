@@ -16,7 +16,7 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Queries
     }
     public async Task<List<AccountDto>> Handle(GetAccountsQuery request, CancellationToken cancellationToken)
     {
-      var users = _asrContext.Get<Domain.Entities.Employee>().Include(x => x.Role).Include(x => x.BankAccount).Where(x => x.BankAccountId != null);
+      var users = _asrContext.Get<Domain.Entities.Employee>().Include(x => x.Role).Include(x => x.BankAccount).Where(x => x.BankAccountId != null).OrderByDescending(x => x.Id);
       return await users.Select(x => new AccountDto
       {
         BankAccountId = x.BankAccount.Id,
