@@ -6,5 +6,7 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
   public class SearchAccountCommand : IRequest<ShortAccountDto?>
   {
     public string AccountNumber { get; set; }
+
+    public int? bankId { get; set; }
   }
 }
