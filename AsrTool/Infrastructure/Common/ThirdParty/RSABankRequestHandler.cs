@@ -18,7 +18,7 @@ namespace AsrTool.Infrastructure.Common.ThirdParty
         public RSABankRequestHandler(Bank bank) : base(bank)
         {
             HOST = "http://localhost:6001";
-            QUERY_INFO_PATH = "/api/thirdparty/customer/";
+            QUERY_INFO_PATH = "/api/thirdparty/customers/";
             COMMAND_MAKE_TRANSACTION_PATH = "/api/thirdparty/transactions";
             COMMAND_COMPLETE_TRANSACTION_PATH = "/api/thirdparty/transactions/";
         }
@@ -73,7 +73,7 @@ namespace AsrTool.Infrastructure.Common.ThirdParty
             return transaction;
         }
 
-        public override async Task<AccountDto> QueryInfo(string accountNumber)
+        public override async Task<ShortAccountDto> QueryInfo(string accountNumber)
         {
             var client = new HttpClient();
             client.BaseAddress = new Uri(HOST);
@@ -87,7 +87,7 @@ namespace AsrTool.Infrastructure.Common.ThirdParty
             client.DefaultRequestHeaders.Add("TimeStamp", requestTimeStamp);
             client.DefaultRequestHeaders.Add("BankSource", Constants.AssociatedBank.MY_BANK_NAME);
 
-            String dataString = (String.Format("{0}{1}{2}", QUERY_INFO_PATH, requestTimeStamp, Constants.AssociatedBank.MY_BANK_NAME));
+            String dataString = (String.Format("{0}{1}{2}", QUERY_INFO_PATH + accountNumber, requestTimeStamp, Constants.AssociatedBank.MY_BANK_NAME));
 
             string HashKey = associatedBank.EncryptRsaPublicKey;
 
@@ -103,7 +103,7 @@ namespace AsrTool.Infrastructure.Common.ThirdParty
 
             var responseObject = response.Content.ReadAsStringAsync().Result;
 
-            AccountDto bankAccountDto = JsonConvert.DeserializeObject<AccountDto>(responseObject);
+            var bankAccountDto = JsonConvert.DeserializeObject<ShortAccountDto>(responseObject);
 
             return bankAccountDto;
         }

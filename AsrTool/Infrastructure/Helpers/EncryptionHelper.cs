@@ -62,7 +62,7 @@ namespace AsrTool.Infrastructure.Helpers
 
         public static string ComputeHash(String secretKey, String authenticationDataString)
         {
-            HMACSHA512 hmac = new HMACSHA512(Convert.FromBase64String(secretKey));
+            HMACSHA512 hmac = new HMACSHA512(Encoding.ASCII.GetBytes(secretKey));
 
             Byte[] authenticationData = UTF8Encoding.GetEncoding("utf-8").GetBytes(authenticationDataString);
 
