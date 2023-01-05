@@ -153,7 +153,7 @@ namespace AsrTool.Middlewares
 
             string signature = EncryptionHelper.RSAEncryption(Constants.AssociatedBank.MY_BANK_NAME, publicKey);
 
-            response.Headers.Add("XApiKey", signature);
+            response.Headers.Add(Constants.BankAuthenticateHeaderRequirement.SignatureHeader, signature);
 
         }
 
