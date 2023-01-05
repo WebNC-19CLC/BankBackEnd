@@ -30,7 +30,7 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Queries
       return await _asrContext.Get<Transaction>()
         .Include(x => x.From).ThenInclude(x => x.User)
         .Include(x => x.To).ThenInclude(x => x.User).AsSplitQuery()
-        .Where(x => x.FromId == user.BankAccount.Id || x.ToId == user.BankAccount.Id)
+        .Where(x => x.FromId == user.BankAccount.Id || x.ToId == user.BankAccount.Id || x.CreatedOn > DateTime.Now - TimeSpan.FromDays(30))
         .OrderByDescending(x => x.Id)
         .Select(x => new TransactionDto {
           Id = x.Id,
