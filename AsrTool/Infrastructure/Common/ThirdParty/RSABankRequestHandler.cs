@@ -103,7 +103,7 @@ namespace AsrTool.Infrastructure.Common.ThirdParty
 
             var responseObject = response.Content.ReadAsStringAsync().Result;
 
-            AccountDto bankAccountDto = JsonConvert.DeserializeObject<AccountDto>(responseObject);
+            var bankAccountDto = JsonConvert.DeserializeObject<ShortAccountDto>(responseObject);
 
             return bankAccountDto;
         }
