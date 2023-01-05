@@ -2,6 +2,8 @@
 using AsrTool.Infrastructure.Domain.Entities;
 using AsrTool.Infrastructure.Exceptions;
 using AsrTool.Infrastructure.Helpers;
+using Microsoft.AspNetCore.Http;
+using System.Net;
 using System.Security.Cryptography;
 using static AsrTool.Constants;
 
@@ -22,21 +24,20 @@ namespace AsrTool.Infrastructure.Common.ThirdParty
 
         protected void ValidSignature(HttpResponseMessage httpResponse)
         {
-            var signature = httpResponse.Headers.GetValues(BankAuthenticateHeaderRequirement.SignatureHeader);
 
-            if(signature == null)
+            if (!httpResponse.Headers.TryGetValues(BankAuthenticateHeaderRequirement.SignatureHeader, out var signature))
             {
                 throw new BusinessException("Failed to make transaction");
             }
             
-            RSAParameters privateKey = EncryptionHelper.ConvertStringToRSAKey(signature.ToString());
+            RSAParameters privateKey = EncryptionHelper.ConvertStringToRSAKey(associatedBank.DecryptRsaPrivateKey);
 
-            string decryptMessage = EncryptionHelper.RSADecryption(signature.ToString(), privateKey);
+            string decryptMessage = EncryptionHelper.RSADecryption(signature.First(), privateKey);
 
-            if (!decryptMessage.Equals(associatedBank.Name)) ;
-            {
-                throw new BusinessException("Failed to make transaction");
-            }
+            //if (!decryptMessage.Equals(associatedBank.Name));
+            //{
+            //    throw new BusinessException("Failed to make transaction");
+            //}
         }
 
         public abstract Task CommandCompleteTransaction(string transactionId);

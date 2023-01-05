@@ -31,16 +31,17 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Queries
         .Include(x => x.From).ThenInclude(x => x.User)
         .Include(x => x.To).ThenInclude(x => x.User).AsSplitQuery()
         .Where(x => x.FromId == user.BankAccount.Id || x.ToId == user.BankAccount.Id)
+        .Where(x => x.CreatedOn >= DateTime.UtcNow.AddDays(-30))
         .OrderByDescending(x => x.Id)
-        .Select(x => new TransactionDto { 
-          Id = x.Id, 
-          FromAccountNumber = x.From.AccountNumber, 
-          ToAccountNumber = x.To.AccountNumber, 
-          Amount = x.Amount, 
-          Time = x.CreatedOn, 
+        .Select(x => new TransactionDto {
+          Id = x.Id,
+          FromAccountNumber = x.From.AccountNumber,
+          ToAccountNumber = x.To.AccountNumber,
+          Amount = x.Amount,
+          Time = x.CreatedOn,
           BankDestinationId = x.BankDestinationId,
           BankSourceId = x.BankSourceId,
-          Type = x.Type,
+          Type = x.ToId == user.BankAccount.Id ? "Receive" : x.Type,
           FromUser = x.From.User.FullName,
           ToUser = x.To.User.FullName
         })

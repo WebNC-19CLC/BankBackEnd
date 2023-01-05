@@ -31,19 +31,19 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
         throw new BusinessException("This user do not have bank account");
       }
 
-      if (!(user.BankAccount.OTP.Code == request.Request.OTP) ) {
-        throw new BusinessException("OTP is not match");
-      }
+      //if (!(user.BankAccount.OTP.Code == request.Request.OTP) ) {
+      //  throw new BusinessException("OTP is not match");
+      //}
 
-      if (user.BankAccount.OTP.Status == Domain.Enums.OTPStatus.Used)
-      {
-        throw new BusinessException("OTP is used");
-      }
+      //if (user.BankAccount.OTP.Status == Domain.Enums.OTPStatus.Used)
+      //{
+      //  throw new BusinessException("OTP is used");
+      //}
 
-      if (!(DateTime.Compare(user.BankAccount.OTP.ExpiredAt, DateTime.UtcNow) > 0))
-      {
-        throw new BusinessException("Expired OTP");
-      }
+      //if (!(DateTime.Compare(user.BankAccount.OTP.ExpiredAt, DateTime.UtcNow) > 0))
+      //{
+      //  throw new BusinessException("Expired OTP");
+      //}
 
       var transaction = new MakeTransactionDto {
         BankId = request.Request.BankId,

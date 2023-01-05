@@ -70,6 +70,14 @@ namespace AsrTool.Controllers
       await Mediator.Send(new GenerateOTPCommand() {Username = dto.Username });
     }
 
+    [HttpPost("validate-otp-forgot-password")]
+    [AllowAnonymous]
+    [IgnoreAntiforgeryToken]
+    public async Task ValidateOTPForgotpassword(ValidateOTPForgotPasswordDto dto)
+    {
+      await Mediator.Send(new ValidateForgotPasswordCommand() {Request = dto });
+    }
+
     [HttpPost("forgot-password")]
     [AllowAnonymous]
     [IgnoreAntiforgeryToken]

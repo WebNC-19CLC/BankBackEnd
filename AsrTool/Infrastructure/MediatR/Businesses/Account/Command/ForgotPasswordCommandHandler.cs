@@ -27,23 +27,6 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
         throw new BusinessException("Account not found");
       }
 
-      if (!(account.BankAccount.OTP.Code == request.Request.OTP))
-      {
-        throw new BusinessException("OTP is not match");
-      }
-
-      if (account.BankAccount.OTP.Status == Domain.Enums.OTPStatus.Used)
-      {
-        throw new BusinessException("OTP is used");
-      }
-
-      if (!(DateTime.Compare(account.BankAccount.OTP.ExpiredAt, DateTime.UtcNow) > 0))
-      {
-        throw new BusinessException("Expired OTP");
-      }
-
-      account.BankAccount.OTP.Status = Domain.Enums.OTPStatus.Used;
-
       account.Password = BC.HashPassword(request.Request.Password);
 
       await _context.UpdateAsync(account);

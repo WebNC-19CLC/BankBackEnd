@@ -28,6 +28,7 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Queries
           Time = x.CreatedOn,
           FromUser = x.From.User.FullName,
           ToUser = x.To.User.FullName,
+          Type = x.Type,
           BankDestinationId = x.BankDestinationId,
           BankSourceId = x.BankSourceId,
         })

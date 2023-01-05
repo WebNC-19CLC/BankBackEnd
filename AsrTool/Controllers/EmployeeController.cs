@@ -16,6 +16,12 @@ namespace AsrTool.Controllers
     {
     }
 
+    [HttpGet("user")]
+    public async Task<List<AccountDto>> GetAccounts()
+    {
+      return await Mediator.Send(new GetAccountsQuery());
+    }
+
     [HttpPost("create-bank-account")]
     public async Task<BankAccountDto> CreateBankAccount([FromBody] CreateAccountDto request)
     {

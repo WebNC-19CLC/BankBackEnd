@@ -69,6 +69,7 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
       await _mediator.Send(new MakeNotificationCommand() { Request = new MakeNotificationDto {Description = $"{user.FullName} pay you {transaction.Amount} of debit.", AccountId = targetAccouunt.Id } });
 
       debit.IsPaid = true;
+      debit.Status = "Done";
 
       await _asrContext.UpdateAsync(debit);
       await _asrContext.SaveChangesAsync();

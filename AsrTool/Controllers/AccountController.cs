@@ -16,12 +16,7 @@ namespace AsrTool.Controllers
     {
     }
 
-    [HttpGet]
-    public async Task<List<AccountDto>> GetAccounts()
-    {
-      return await Mediator.Send(new GetAccountsQuery());
-    }
-
+   
     [HttpGet("me")]
     public async Task<AccountDto> GetCurrentAccount()
     {
@@ -86,10 +81,10 @@ namespace AsrTool.Controllers
       return await Mediator.Send(new GetMyDebitsQuery());
     }
 
-    [HttpDelete("me/debits/{id}")]
-    public async Task DeleteMyDebit([FromRoute] int id)
+    [HttpPost("me/debits/cancel")]
+    public async Task DeleteMyDebit([FromBody] DeleteDebitRequestDto dto)
     {
-      await Mediator.Send(new DeleteMyDebitCommand() { Id = id });
+      await Mediator.Send(new DeleteMyDebitCommand() { Request = dto });
     }
 
     [HttpPost("me/debits")]

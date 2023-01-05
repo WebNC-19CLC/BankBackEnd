@@ -26,11 +26,11 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
 
     public async Task<Unit> Handle(DeleteMyDebitCommand request, CancellationToken cancellationToken)
     {
-      var debit = await _context.Get<Debit>().SingleOrDefaultAsync(x => x.Id == request.Id);
+      var debit = await _context.Get<Debit>().SingleOrDefaultAsync(x => x.Id == request.Request.Id);
 
       var user = await _context.Get<Employee>().Include(x => x.BankAccount).ThenInclude(x => x.Debits).SingleOrDefaultAsync(x => x.Id == _userResolver.CurrentUser.Id);
 
-      if (!user.BankAccount.Debits.Any(x => x.Id == request.Id))
+      if (!user.BankAccount.Debits.Any(x => x.Id == request.Request.Id))
       {
         throw new BusinessException("Cannot find this debit in your list");
       }
@@ -50,12 +50,15 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
         sendNotId = (int)debit.FromId;
       }
 
-      await _context.RemoveAsync(debit);
+      debit.Status = "Cancel";
+      debit.Description = request.Request.Description;
+
+      await _context.UpdateAsync(debit);
       await _context.SaveChangesAsync();
 
       string mes = userInDebt?  "you in debt with" : "you make with";
 
-      await _mediator.Send(new MakeNotificationCommand() { Request = new MakeNotificationDto { Description = $"{user.FullName} has deleted debit that {mes} amount of {debit.Amount}", AccountId = sendNotId } });
+      await _mediator.Send(new MakeNotificationCommand() { Request = new MakeNotificationDto { Description = $"{user.FullName} has cancel debit that {mes} amount of {debit.Amount}. Description : {request.Request.Description}", AccountId = sendNotId } });
 
       return Unit.Value;
     }
