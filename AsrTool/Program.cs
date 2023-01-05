@@ -78,7 +78,7 @@ builder.Services.AddCors(options =>
     builder =>
     {
       builder.WithOrigins("http://localhost:3000", "https://localhost:3000", "https://wnc-final.vercel.app", "https://localhost:6000", "https://localhost:5000", 
-        "http://127.0.0.1", "http://127.0.0.1:3000", "https://127.0.0.1", "https://127.0.0.1:3000",, "https://bankmaia.herokuapp.com", "https://rsa-bank.herokuapp.com")
+        "http://127.0.0.1", "http://127.0.0.1:3000", "https://127.0.0.1", "https://127.0.0.1:3000", "https://bankmaia.herokuapp.com", "https://rsa-bank.herokuapp.com")
       .AllowAnyMethod().AllowAnyHeader().AllowCredentials();
     });
 });
