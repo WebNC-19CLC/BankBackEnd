@@ -57,6 +57,7 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
                 from.OTP.Status = Domain.Enums.OTPStatus.Used;
 
                 await _asrContext.UpdateAsync(from);
+                if(request.MakeTransactionDto.Type != "Charge")
                 await _asrContext.UpdateAsync(to);
 
                 var trans = new Transaction
