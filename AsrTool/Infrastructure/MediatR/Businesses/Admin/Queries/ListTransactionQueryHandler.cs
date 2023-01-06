@@ -9,7 +9,7 @@ using AsrTool.Infrastructure.Auth;
 
 namespace AsrTool.Infrastructure.MediatR.Businesses.Admin.Queries
 {
-  public class ListTransactionQueryHandler : IRequestHandler<ListTransactionQuery, ICollection<TransactionDto>>
+  public class ListTransactionQueryHandler : IRequestHandler<ListTransactionQuery, AdminListTransactionDto>
   {
     private readonly IAsrContext _asrContext;
 
@@ -18,7 +18,7 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Admin.Queries
       _asrContext = asrContext;
     }
 
-    public async Task<ICollection<TransactionDto>> Handle(ListTransactionQuery request, CancellationToken cancellationToken)
+    public async Task<AdminListTransactionDto> Handle(ListTransactionQuery request, CancellationToken cancellationToken)
     {
       var query = _asrContext.Get<Transaction>().Include(x => x.From).ThenInclude(x => x.User)
         .Include(x => x.To).ThenInclude(x => x.User).AsSplitQuery();
@@ -42,7 +42,7 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Admin.Queries
         query = query.Where(x => x.BankSourceId == request.Filter.BankDestinationId);
       }
 
-      return await query.OrderByDescending(x => x.Id).Select(x => new TransactionDto
+      var data =  await query.OrderByDescending(x => x.Id).Select(x => new TransactionDto
         {
           Id = x.Id,
           FromAccountNumber = x.From.AccountNumber,
@@ -56,6 +56,12 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Admin.Queries
           ToUser = x.To.User.FullName
         })
         .ToListAsync();
+
+      return new AdminListTransactionDto
+      {
+        TotalAmount = data.Sum(x => x.Amount),
+        TransactionList = data,
+      };
     }
   }
 }
