@@ -36,7 +36,7 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Queries
         .Select(x => new TransactionDto {
           Id = x.Id,
           FromAccountNumber = x.From.AccountNumber,
-          ToAccountNumber = x.To.AccountNumber,
+          ToAccountNumber = x.ToAccountNumber != null ? x.ToAccountNumber : x.To.AccountNumber,
           Amount = x.Amount,
           Time = x.CreatedOn,
           BankDestinationId = x.BankDestinationId,
