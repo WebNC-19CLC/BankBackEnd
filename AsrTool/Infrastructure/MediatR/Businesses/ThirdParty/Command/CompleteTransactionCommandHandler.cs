@@ -39,11 +39,11 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.ThirdParty.Command
 
             toAccount.Balance = toAccount.Balance + transaction.Amount;
             await _context.UpdateAsync(toAccount);
-
             //TODO: change transaction type to enum completed
-            transaction.Type = "Completed";
+            transaction.Type = "Transaction";
             await _context.UpdateAsync(transaction);
 
+            await _context.SaveChangesAsync();
             return _mapper.Map<Transaction, TransactionDto>(transaction);
         }
     }
