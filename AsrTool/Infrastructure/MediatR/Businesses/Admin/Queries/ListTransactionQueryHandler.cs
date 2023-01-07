@@ -42,6 +42,12 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Admin.Queries
         query = query.Where(x => x.BankSourceId == request.Filter.BankDestinationId);
       }
 
+
+      if (request.Filter.Type != null)
+      {
+        query = query.Where(x => x.Type == request.Filter.Type);
+      }
+
       var data =  await query.OrderByDescending(x => x.Id).Select(x => new TransactionDto
         {
           Id = x.Id,
