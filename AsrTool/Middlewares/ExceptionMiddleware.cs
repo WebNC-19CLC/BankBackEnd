@@ -64,7 +64,7 @@ namespace AsrTool.Middlewares
 
         default:
           context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-          message = "serverError";
+          message = exception.Message;
           break;
       }
 

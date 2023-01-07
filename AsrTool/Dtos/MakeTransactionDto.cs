@@ -2,8 +2,8 @@
 {
   public class MakeTransactionDto
   {
-    public string FromAccountNumber { get; set; }
-    public string ToAccountNumber { get; set; }
+    public string? FromAccountNumber { get; set; }
+    public string? ToAccountNumber { get; set; }
     public double Amount { get; set; }
     public int? BankId { get; set; }
     public string Description { get; set; } = string.Empty;

@@ -30,7 +30,7 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
       }
 
       var transaction = new MakeTransactionDto {
-        FromAccountNumber = bankAccount.AccountNumber,
+        FromAccountNumber = null,
         ToAccountNumber = bankAccount.AccountNumber,
         BankId = null,
         Amount = request.Request.Amount,

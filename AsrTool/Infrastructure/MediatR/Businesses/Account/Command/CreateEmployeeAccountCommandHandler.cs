@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
 {
-  public class CreateEmployeeAccountCommandHandler : IRequestHandler<CreateAccountCommand, BankAccountDto>
+  public class CreateEmployeeAccountCommandHandler : IRequestHandler<CreateEmployeeAccountCommand, BankAccountDto>
   {
     private readonly IAsrContext _asrContext;
 
@@ -17,7 +17,7 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
       _asrContext = asrContext;
     }
 
-    public async Task<BankAccountDto> Handle(CreateAccountCommand request, CancellationToken cancellationToken)
+    public async Task<BankAccountDto> Handle(CreateEmployeeAccountCommand request, CancellationToken cancellationToken)
     {
       var ifUserNameExist = await _asrContext.Get<Employee>().AnyAsync(x => x.Username == request.Request.Username);
       if (ifUserNameExist)

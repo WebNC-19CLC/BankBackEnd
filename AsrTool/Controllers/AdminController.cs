@@ -19,32 +19,10 @@ namespace AsrTool.Controllers
     {
     }
 
-    [HttpPost("getUsersByRoles")]
-    public async Task<DataSourceResultDto<UserByRoleDto>> GetUsersByRoles([FromBody] GetUsersByRolesFilterDto request)
+    [HttpGet("employee")]
+    public async Task<ICollection<EmployeeDto>> GetEmployees()
     {
-      return await Mediator.Send(new GetUsersByRolesQuery()
-      {
-        RoleIds = request.RoleIds,
-        DataSourceRequest = request.Request
-      });
-    }
-
-    [HttpPost("assignUsersToRole")]
-    public async Task AssignUsersToRole([FromBody] AssignUsersToRoleRequestDto request)
-    {
-      await Mediator.Send(new AssignUsersToRoleCommand()
-      {
-        Request = request
-      });
-    }
-
-    [HttpPost("resetRoles")]
-    public async Task ResetRoles([FromBody] ResetRolesRequestDto request)
-    {
-      await Mediator.Send(new ResetRolesCommand()
-      {
-        Request = request
-      });
+      return await Mediator.Send(new GetEmployeeQuery());
     }
 
     [HttpPost("register-admin")]
@@ -82,7 +60,7 @@ namespace AsrTool.Controllers
 
 
     [HttpPost("list-transactions")]
-    public async Task<ICollection<TransactionDto>> ListTransactions([FromBody] ListTransactionFilter filter)
+    public async Task<AdminListTransactionDto> ListTransactions([FromBody] ListTransactionFilter filter)
     {
       return await Mediator.Send(new ListTransactionQuery { Filter = filter });
     }

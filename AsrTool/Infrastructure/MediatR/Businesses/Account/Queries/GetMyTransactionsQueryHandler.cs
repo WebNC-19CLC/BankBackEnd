@@ -35,8 +35,8 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Queries
         .OrderByDescending(x => x.Id)
         .Select(x => new TransactionDto {
           Id = x.Id,
-          FromAccountNumber = x.From.AccountNumber,
-          ToAccountNumber = x.To.AccountNumber,
+          FromAccountNumber = x.FromAccountNumber != null ? x.FromAccountNumber : x.From.AccountNumber,
+          ToAccountNumber = x.ToAccountNumber != null ? x.ToAccountNumber : x.To.AccountNumber,
           Amount = x.Amount,
           Time = x.CreatedOn,
           BankDestinationId = x.BankDestinationId,

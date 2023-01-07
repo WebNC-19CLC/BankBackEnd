@@ -17,7 +17,7 @@ namespace AsrTool.Infrastructure.Common.ThirdParty
     {
         public RSABankRequestHandler(Bank bank) : base(bank)
         {
-            HOST = "http://localhost:6001";
+            HOST = "https://rsa-bank.herokuapp.com";
             QUERY_INFO_PATH = "/api/thirdparty/customers/";
             COMMAND_MAKE_TRANSACTION_PATH = "/api/thirdparty/transactions";
             COMMAND_COMPLETE_TRANSACTION_PATH = "/api/thirdparty/transactions/";

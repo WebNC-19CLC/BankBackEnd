@@ -99,10 +99,10 @@ namespace AsrTool.Controllers
       await Mediator.Send(new PayMyDebitCommand() { Id = dto.Id, OTP = dto.OTP });
     }
 
-    [HttpPost("me/searchAccountNativeBank")]
+    [HttpPost("me/searchAccount")]
     public async Task<ShortAccountDto?> SearchAccount([FromBody] SearchAccountRequestDto dto)
     {
-      return await Mediator.Send(new SearchAccountCommand() { AccountNumber = dto.AccountNumber });
+      return await Mediator.Send(new SearchAccountCommand() { AccountNumber = dto.AccountNumber, bankId = dto.BankId });
     }
 
     [HttpPost("me/generate-otp")]

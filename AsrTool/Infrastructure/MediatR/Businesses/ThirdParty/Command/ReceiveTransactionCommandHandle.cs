@@ -40,7 +40,7 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.ThirdParty.Command
                 ToAccountNumber = to.AccountNumber,
                 ToId = to.Id,
                 Amount = request.makeTransaction.Amount,
-                Type = request.makeTransaction.Type,
+                Type = "Transaction",
                 Description = request.makeTransaction.Description != null && request.makeTransaction.Description != string.Empty ? request.makeTransaction.Description : $"Account {request.makeTransaction.FromAccountNumber} transfer {request.makeTransaction.Amount} units",
                 ChargeReceiver = false,
                 TransactionFee = Constants.Fee.TransactionFee,
