@@ -117,6 +117,8 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
 
         from.Balance = from.Balance - request.MakeTransactionDto.Amount - Constants.Fee.TransactionFee;
 
+        from.OTP.Status = Domain.Enums.OTPStatus.Used;
+
         await _asrContext.UpdateAsync(from);
 
         var trans = new Transaction
