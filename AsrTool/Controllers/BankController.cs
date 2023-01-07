@@ -22,7 +22,7 @@ namespace AsrTool.Controllers
         }
 
         [HttpPost]
-        public async Task<BankDto> CreateBank([FromBody] CreateBankDto createBankDto)
+        public async Task<CreateBankDto> CreateBank([FromBody] CreateBankDto createBankDto)
         {
             var result = await Mediator.Send(new CreateBankCommand
             {

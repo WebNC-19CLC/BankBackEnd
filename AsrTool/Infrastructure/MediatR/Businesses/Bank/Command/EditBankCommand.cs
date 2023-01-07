@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AsrTool.Infrastructure.MediatR.Businesses.Bank.Command
 {
-  public class CreateBankCommand : IRequest<CreateBankDto>
+  public class EditBankCommand : IRequest<CreateBankDto>
   {
     public CreateBankDto Request { get; set; }
   }
