@@ -28,7 +28,10 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Admin.Queries
         Address = x.Site,
         IsActive = x.Active,
         Email = x.Email,
-        FullName = x.FullName,
+        FirstName = x.FullName,
+        LastName = x.LastName,
+        IndentityNumber = x.IdentityNumber,
+        Phone = x.Phone,
         Role = x.Role.Name
       }).ToListAsync();
     }

@@ -25,6 +25,18 @@ namespace AsrTool.Controllers
       return await Mediator.Send(new GetEmployeeQuery());
     }
 
+    [HttpPut("employee")]
+    public async Task<EmployeeDto> UpdateEmployee([FromBody] EmployeeDto dto)
+    {
+      return await Mediator.Send(new UpdateEmployeeCommand() {Request = dto });
+    }
+
+    [HttpDelete("employee/{id}")]
+    public async Task DeleteEmployee([FromRoute] int id)
+    {
+      await Mediator.Send(new DeleteEmployeeCommnad() { Id = id });
+    }
+
     [HttpPost("register-admin")]
     [AllowAnonymous]
     [IgnoreAntiforgeryToken]
