@@ -17,11 +17,13 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
   {
     private readonly IAsrContext _asrContext;
     private readonly IUserResolver _userResolver;
+    private readonly IMediator _mediator;
 
-    public MakeTransactionCommandHandler(IAsrContext asrContext, IUserResolver userResolver)
+    public MakeTransactionCommandHandler(IAsrContext asrContext, IUserResolver userResolver, IMediator mediator)
     {
       _asrContext = asrContext;
       _userResolver = userResolver;
+      _mediator = mediator;
     }
 
     public async Task<Unit> Handle(MakeTransactionCommand request, CancellationToken cancellationToken)
@@ -56,6 +58,23 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
         await _asrContext.AddRangeAsync(trans);
 
         await _asrContext.SaveChangesAsync();
+
+        trans = await _asrContext.Get<Transaction>().Include(x => x.To).ThenInclude(x => x.User).Include(x => x.From).ThenInclude(x => x.User)
+          .SingleOrDefaultAsync(x => x.Id == trans.Id);
+
+        await _mediator.Send(new MakeNotificationCommand() { Request = new MakeNotificationDto { AccountId = to.Id, Description = "" }, IsNotification = false, Transaction = new TransactionDto
+        {
+          Id = trans.Id,
+          FromAccountNumber = trans.FromAccountNumber != null ? trans.FromAccountNumber : trans.From.AccountNumber,
+          ToAccountNumber = trans.ToAccountNumber != null ? trans.ToAccountNumber : trans.To.AccountNumber,
+          Amount = trans.Amount,
+          Time = trans.CreatedOn,
+          BankDestinationId = trans.BankDestinationId,
+          BankSourceId = trans.BankSourceId,
+          Type = "Receive",
+          FromUser = trans.From.User.FullName,
+          ToUser = trans.To.User.FullName
+        } });
       }
       else if (request.MakeTransactionDto.BankId == null)
       {
@@ -99,6 +118,28 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
         await _asrContext.AddRangeAsync(trans);
 
         await _asrContext.SaveChangesAsync();
+
+        trans = await _asrContext.Get<Transaction>().Include(x => x.To).ThenInclude(x => x.User).Include(x => x.From).ThenInclude(x => x.User)
+        .SingleOrDefaultAsync(x => x.Id == trans.Id);
+
+        await _mediator.Send(new MakeNotificationCommand()
+        {
+          Request = new MakeNotificationDto { AccountId = to.Id, Description = "" },
+          IsNotification = false,
+          Transaction = new TransactionDto
+          {
+            Id = trans.Id,
+            FromAccountNumber = trans.FromAccountNumber != null ? trans.FromAccountNumber : trans.From.AccountNumber,
+            ToAccountNumber = trans.ToAccountNumber != null ? trans.ToAccountNumber : trans.To.AccountNumber,
+            Amount = trans.Amount,
+            Time = trans.CreatedOn,
+            BankDestinationId = trans.BankDestinationId,
+            BankSourceId = trans.BankSourceId,
+            Type = "Receive",
+            FromUser = trans.From.User.FullName,
+            ToUser = trans.To.User.FullName
+          }
+        });
       }
       else if (request.MakeTransactionDto.BankId != null)
       {

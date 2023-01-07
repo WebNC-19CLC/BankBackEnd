@@ -8,6 +8,8 @@ namespace AsrTool.Hubs
 
     Task SendNotificationToUser(NotifationDto notifation);
 
+    Task SendTransactionToUser(TransactionDto transaction);
+
     Task JoinGroupNotification();
   }
 }
