@@ -12,5 +12,9 @@ namespace AsrTool.Hubs
     public async Task SendNotificationToUser(NotifationDto notifation){
     
     }
+
+    public async Task SendTransactionToUser(TransactionDto transaction) {
+    
+    }
   }
 }

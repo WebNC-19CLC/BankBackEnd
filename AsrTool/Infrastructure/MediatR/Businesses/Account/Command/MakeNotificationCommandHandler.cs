@@ -28,19 +28,29 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
 
     public async Task<Unit> Handle(MakeNotificationCommand request, CancellationToken cancellationToken)
     {
-      var noti = new Notification {
-        Description = request.Request.Description,
-        BankAccountId = request.Request.AccountId,
-      };
+      if (request.IsNotification)
+      {
+        var noti = new Notification
+        {
+          Description = request.Request.Description,
+          BankAccountId = request.Request.AccountId,
+        };
 
-      var user = await _asrContext.Get<Employee>().SingleOrDefaultAsync(x => x.BankAccountId == request.Request.AccountId);
+        var user = await _asrContext.Get<Employee>().SingleOrDefaultAsync(x => x.BankAccountId == request.Request.AccountId);
 
-      await _asrContext.AddRangeAsync(noti);
-      await _asrContext.SaveChangesAsync();
+        await _asrContext.AddRangeAsync(noti);
+        await _asrContext.SaveChangesAsync();
 
-      await _messageHub.Clients.User(user.Username).SendNotificationToUser(_mapper.Map<Notification, NotifationDto>(noti));
+        await _messageHub.Clients.User(user.Username).SendNotificationToUser(_mapper.Map<Notification, NotifationDto>(noti));
+      }
 
+      else {
+        var user = await _asrContext.Get<Employee>().SingleOrDefaultAsync(x => x.BankAccountId == request.Request.AccountId);
+
+        await _messageHub.Clients.User(user.Username).SendTransactionToUser(request.Transaction);
+      }
       return Unit.Value;
+
     }
   }
 }
