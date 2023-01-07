@@ -18,6 +18,8 @@ namespace AsrTool.Infrastructure.Domain.Entities
 
     public string Description { get; set; }
 
+    public string? Type { get; set; }
+
     public int BankAccountId { get; set; }
 
     public BankAccount BankAccount { get; set; }

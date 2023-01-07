@@ -34,10 +34,11 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
       {
         throw new NotFoundException();
       }
-      if(request.MakeTransactionDto.Type == "Charge")
+      if (request.MakeTransactionDto.Type == "Charge")
       {
         var to = await _asrContext.Get<Domain.Entities.BankAccount>().SingleOrDefaultAsync(x => x.AccountNumber == request.MakeTransactionDto.ToAccountNumber);
         to.Balance = to.Balance + request.MakeTransactionDto.Amount;
+
         await _asrContext.UpdateAsync(to);
 
         var trans = new Transaction
@@ -53,8 +54,6 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
           TransactionFee = Constants.Fee.TransactionFee,
         };
 
-        await _asrContext.UpdateAsync(to); 
-
         await _asrContext.AddRangeAsync(trans);
 
         await _asrContext.SaveChangesAsync();
@@ -62,19 +61,18 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
         trans = await _asrContext.Get<Transaction>().Include(x => x.To).ThenInclude(x => x.User).Include(x => x.From).ThenInclude(x => x.User)
           .SingleOrDefaultAsync(x => x.Id == trans.Id);
 
-        await _mediator.Send(new MakeNotificationCommand() { Request = new MakeNotificationDto { AccountId = to.Id, Description = "" }, IsNotification = false, Transaction = new TransactionDto
+        if (trans.Type == "Charge")
         {
-          Id = trans.Id,
-          FromAccountNumber = trans.FromAccountNumber != null ? trans.FromAccountNumber : trans.From.AccountNumber,
-          ToAccountNumber = trans.ToAccountNumber != null ? trans.ToAccountNumber : trans.To.AccountNumber,
-          Amount = trans.Amount,
-          Time = trans.CreatedOn,
-          BankDestinationId = trans.BankDestinationId,
-          BankSourceId = trans.BankSourceId,
-          Type = "Receive",
-          FromUser = trans.From.User.FullName,
-          ToUser = trans.To.User.FullName
-        } });
+          await _mediator.Send(new MakeNotificationCommand()
+          {
+            Request = new MakeNotificationDto
+            {
+              AccountId = trans.To.Id,
+              Description = $"You have been recharged money with the amount of money for {trans.Amount}",
+              Type = "Transaction",
+            }
+          });
+        }
       }
       else if (request.MakeTransactionDto.BankId == null)
       {
@@ -122,24 +120,18 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
         trans = await _asrContext.Get<Transaction>().Include(x => x.To).ThenInclude(x => x.User).Include(x => x.From).ThenInclude(x => x.User)
         .SingleOrDefaultAsync(x => x.Id == trans.Id);
 
-        await _mediator.Send(new MakeNotificationCommand()
+        if (trans.Type == "Transaction")
         {
-          Request = new MakeNotificationDto { AccountId = to.Id, Description = "" },
-          IsNotification = false,
-          Transaction = new TransactionDto
+          await _mediator.Send(new MakeNotificationCommand()
           {
-            Id = trans.Id,
-            FromAccountNumber = trans.FromAccountNumber != null ? trans.FromAccountNumber : trans.From.AccountNumber,
-            ToAccountNumber = trans.ToAccountNumber != null ? trans.ToAccountNumber : trans.To.AccountNumber,
-            Amount = trans.Amount,
-            Time = trans.CreatedOn,
-            BankDestinationId = trans.BankDestinationId,
-            BankSourceId = trans.BankSourceId,
-            Type = "Receive",
-            FromUser = trans.From.User.FullName,
-            ToUser = trans.To.User.FullName
-          }
-        });
+            Request = new MakeNotificationDto
+            {
+              AccountId = trans.To.Id,
+              Description = $"User {from.User.FullName} have sent you the amount of money for {trans.Amount} with description: {trans.Amount}",
+              Type = trans.Type,
+            }
+          });
+        }
       }
       else if (request.MakeTransactionDto.BankId != null)
       {
