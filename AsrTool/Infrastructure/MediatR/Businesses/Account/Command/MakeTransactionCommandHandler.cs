@@ -51,6 +51,8 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
           TransactionFee = Constants.Fee.TransactionFee,
         };
 
+        await _asrContext.UpdateAsync(to); 
+
         await _asrContext.AddRangeAsync(trans);
 
         await _asrContext.SaveChangesAsync();
