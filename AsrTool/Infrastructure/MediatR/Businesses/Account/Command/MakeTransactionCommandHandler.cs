@@ -58,17 +58,17 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
 
         await _asrContext.SaveChangesAsync();
 
-        trans = await _asrContext.Get<Transaction>().Include(x => x.To).ThenInclude(x => x.User).Include(x => x.From).ThenInclude(x => x.User)
+        var transaction = await _asrContext.Get<Transaction>().Include(x => x.To).ThenInclude(x => x.User).Include(x => x.From).ThenInclude(x => x.User)
           .SingleOrDefaultAsync(x => x.Id == trans.Id);
 
-        if (trans.Type == "Charge")
+        if (transaction.Type == "Charge")
         {
           await _mediator.Send(new MakeNotificationCommand()
           {
             Request = new MakeNotificationDto
             {
-              AccountId = trans.To.Id,
-              Description = $"You have been recharged money with the amount of money for {trans.Amount}",
+              AccountId = transaction.To.Id,
+              Description = $"You have been recharged money with the amount of money for {transaction.Amount}",
               Type = "Transaction",
             }
           });
@@ -117,17 +117,17 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
 
         await _asrContext.SaveChangesAsync();
 
-        trans = await _asrContext.Get<Transaction>().Include(x => x.To).ThenInclude(x => x.User).Include(x => x.From).ThenInclude(x => x.User)
+        var transaction = await _asrContext.Get<Transaction>().Include(x => x.To).ThenInclude(x => x.User).Include(x => x.From).ThenInclude(x => x.User)
         .SingleOrDefaultAsync(x => x.Id == trans.Id);
 
-        if (trans.Type == "Transaction")
+        if (transaction.Type == "Transaction")
         {
           await _mediator.Send(new MakeNotificationCommand()
           {
             Request = new MakeNotificationDto
             {
-              AccountId = trans.To.Id,
-              Description = $"User {from.User.FullName} have sent you the amount of money for {trans.Amount} with description: {trans.Amount}",
+              AccountId = transaction.To.Id,
+              Description = $"User {transaction.From.User.FullName} have sent you the amount of money for {transaction.Amount} with description: {transaction.Amount}",
               Type = trans.Type,
             }
           });
