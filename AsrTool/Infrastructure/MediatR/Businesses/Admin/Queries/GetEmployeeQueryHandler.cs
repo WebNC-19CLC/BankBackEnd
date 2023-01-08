@@ -24,6 +24,7 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Admin.Queries
 
       return await employees.Select(x => new EmployeeDto
       {
+        Username = x.Username,
         Id = x.Id,
         Address = x.Site,
         IsActive = x.Active,
