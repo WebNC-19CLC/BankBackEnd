@@ -16,7 +16,6 @@ namespace AsrTool.Controllers
     {
     }
 
-   
     [HttpGet("me")]
     public async Task<AccountDto> GetCurrentAccount()
     {

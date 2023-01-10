@@ -33,6 +33,8 @@ using Serilog;
 using Microsoft.AspNetCore.Builder;
 using AsrTool.Infrastructure.Filters;
 using AsrTool.Hubs;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 var DevAllowSpecificOrigins = "DevAllowSpecificOrigins";
@@ -69,8 +71,15 @@ builder.Services.Configure<CookiePolicyOptions>(options =>
   options.MinimumSameSitePolicy = SameSiteMode.None;
 });
 
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+  c.SwaggerDoc("v1", new OpenApiInfo { Title = "BankWebNC", Version = "v1.0.0" });
+  c.ExampleFilters();
+  var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+  c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+});
 
+builder.Services.AddSwaggerExamplesFromAssemblies(Assembly.GetEntryAssembly());
 
 builder.Services.AddCors(options =>
 {
