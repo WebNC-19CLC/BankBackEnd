@@ -31,7 +31,7 @@ namespace AsrTool.Controllers
         }
 
         /// <summary>
-        /// Create Bank
+        /// Create Bank (DON'T USE THIS API)
         /// </summary>
         /// <returns>Bank info, one key for hash, asymmetric encryption for associated bank</returns>
         /// <response code="400">Bad request: Failed to valid request body</response>
@@ -50,7 +50,7 @@ namespace AsrTool.Controllers
         }
 
         /// <summary>
-        /// Update Hash,asymmetric encryption key by bank name
+        /// Update Hash,asymmetric encryption key by bank name (DON'T USE THIS API)
         /// </summary>
         /// <returns>Bank name and Hash,asymmetric encryption key for associated bank</returns>
         /// <response code="400">Bad request: Failed to valid request body</response>
@@ -70,7 +70,7 @@ namespace AsrTool.Controllers
 
 
         /// <summary>
-        /// Delete bank by id
+        /// Delete bank by id (DON'T USE THIS API)
         /// </summary>
         /// <returns>Status code</returns>
         /// <response code="200">Sucess</response>
