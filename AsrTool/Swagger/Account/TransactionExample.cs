@@ -3,11 +3,22 @@ using AsrTool.Dtos;
 
 namespace AsrTool.Swagger.Account
 {
-    public class TransactionExample : IMultipleExamplesProvider<AccountDto>
+        public class TransactionExample : IMultipleExamplesProvider<MakeTransactionDto>
     {
-        public IEnumerable<SwaggerExample<AccountDto>> GetExamples()
+        public IEnumerable<SwaggerExample<MakeTransactionDto>> GetExamples()
         {
-            throw new NotImplementedException();
+            yield return SwaggerExample.Create(
+                "Make Transaction Bank1",
+                new MakeTransactionDto { 
+                Amount = 500,
+                BankId = 1,
+                ChargeReceiver = false,
+                Description = "Description",
+                FromAccountNumber = "Account number in Bank Call API",
+                ToAccountNumber = "Account number from my bank",
+                Type = "MakeTransaction",
+                }
+                );
         }
 
         public class TranferMoney : IMultipleExamplesProvider<SelfTransferDto>
@@ -41,7 +52,6 @@ namespace AsrTool.Swagger.Account
                  );
             }
         }
-
 
         public class ListAccountTransactionExample : IMultipleExamplesProvider<List<TransactionDto>>
         {
