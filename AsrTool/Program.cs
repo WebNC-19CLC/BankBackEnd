@@ -33,6 +33,8 @@ using Serilog;
 using Microsoft.AspNetCore.Builder;
 using AsrTool.Infrastructure.Filters;
 using AsrTool.Hubs;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 var DevAllowSpecificOrigins = "DevAllowSpecificOrigins";
@@ -69,8 +71,15 @@ builder.Services.Configure<CookiePolicyOptions>(options =>
   options.MinimumSameSitePolicy = SameSiteMode.None;
 });
 
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+  c.SwaggerDoc("v1", new OpenApiInfo { Title = "BankWebNC", Version = "v1.0.0" });
+  c.ExampleFilters();
+  var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+  c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+});
 
+builder.Services.AddSwaggerExamplesFromAssemblies(Assembly.GetEntryAssembly());
 
 builder.Services.AddCors(options =>
 {
@@ -78,7 +87,9 @@ builder.Services.AddCors(options =>
     builder =>
     {
       builder.WithOrigins("http://localhost:3000", "https://localhost:3000", "https://wnc-final.vercel.app", "https://localhost:6000", "https://localhost:5000", 
-        "http://127.0.0.1", "http://127.0.0.1:3000", "https://127.0.0.1", "https://127.0.0.1:3000", "https://rsa-bank.herokuapp.com", "https://bankmaia.herokuapp.com")
+        "http://127.0.0.1", "http://127.0.0.1:3000", "https://127.0.0.1", "https://127.0.0.1:3000", "https://rsa-bank.herokuapp.com", "https://bankmaia.herokuapp.com",
+        "http://nguyentai.click", "https://nguyentai.click"
+        )
       .AllowAnyMethod().AllowAnyHeader().AllowCredentials();
     });
 });

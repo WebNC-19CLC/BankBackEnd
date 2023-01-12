@@ -79,11 +79,12 @@ namespace AsrTool.Infrastructure.Common.Imp
 
     public string GetMessage(string OTP)
     {
-      string messageBody = "<font><h2>This is your OTP Code for Internet Banking:</h2> </font><br>";
+      
+      string messageBody = "Dear Customer, <br> <font>This is your one time OTP Code for Internet Banking: </font>";
 
       string OTPstring = $"<b><h3>{OTP}</h3></b><br>";
 
-      string messageEnd = "<font>Please dont share this code with anyone</font>";
+      string messageEnd = "Please use this OTP to complete your transaction or command <br> <font> <b> Please dont share this code with anyone <b> </font> <br>Thank you, <br> BankWNC Team";
 
       string message = messageBody + OTPstring + messageEnd;
 

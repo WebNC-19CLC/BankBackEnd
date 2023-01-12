@@ -2,9 +2,11 @@
 using AsrTool.Infrastructure.MediatR.Businesses.Account.Command;
 using AsrTool.Infrastructure.MediatR.Businesses.User.Commands;
 using AsrTool.Infrastructure.MediatR.Businesses.User.Queries;
+using AsrTool.Swagger.Auth;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace AsrTool.Controllers
 {
@@ -14,6 +16,14 @@ namespace AsrTool.Controllers
     {
     }
 
+    /// <summary>
+    /// Login
+    /// </summary>
+    /// <returns>Status code</returns>
+    /// <response code="200">Success</response> 
+    /// <response code="400">Bad request: Failed to valid request body</response>
+    /// <response code="406">Bussiness reason with message</response>
+    [SwaggerRequestExample(typeof(LoginRequestDto), typeof(AuthExample))]
     [HttpPost("login")]
     [AllowAnonymous]
     [IgnoreAntiforgeryToken]
@@ -28,7 +38,14 @@ namespace AsrTool.Controllers
       return true;
     }
 
-
+    /// <summary>
+    /// Register
+    /// </summary>
+    /// <returns>Status code</returns>
+    /// <response code="200">Success</response> 
+    /// <response code="400">Bad request: Failed to valid request body</response>
+    /// <response code="406">Bussiness reason with message</response>
+    [SwaggerRequestExample(typeof(RegisterRequestDto), typeof(RegisterRequestExample))]
     [HttpPost("register")]
     [AllowAnonymous]
     [IgnoreAntiforgeryToken]
@@ -43,6 +60,14 @@ namespace AsrTool.Controllers
       return true;
     }
 
+
+    /// <summary>
+    /// Get current user detail
+    /// </summary>
+    /// <returns>User detail</returns>
+    /// <response code="200">Success</response> 
+    /// <response code="400">Bad request: Failed to valid request body</response>
+    /// <response code="406">Bussiness reason with message</response>
     [HttpGet("me")]
     [IgnoreAntiforgeryToken]
     public async Task<UserDto> GetCurrentUser()
@@ -54,6 +79,13 @@ namespace AsrTool.Controllers
       });
     }
 
+    /// <summary>
+    /// Logout
+    /// </summary>
+    /// <returns>Status code</returns>
+    /// <response code="200">Success</response> 
+    /// <response code="400">Bad request: Failed to valid request body</response>
+    /// <response code="406">Bussiness reason with message</response>
     [HttpPost("logout")]
     [IgnoreAntiforgeryToken]
     public async Task Logout()
@@ -61,7 +93,14 @@ namespace AsrTool.Controllers
       await Mediator.Send(new LogoutCommand() { HttpContext = HttpContext });
     }
 
-
+    /// <summary>
+    ///  Generate OTP command
+    /// </summary>
+    /// <returns>Status code</returns>
+    /// <response code="200">Success</response> 
+    /// <response code="400">Bad request: Failed to valid request body</response>
+    /// <response code="406">Bussiness reason with message</response>
+    [SwaggerRequestExample(typeof(ForgotPasswordGenOTPDto), typeof(ForgotPasswordGenOTPDtoExample))]
     [HttpPost("generate-otp-forgot-password")]
     [AllowAnonymous]
     [IgnoreAntiforgeryToken]
@@ -70,6 +109,14 @@ namespace AsrTool.Controllers
       await Mediator.Send(new GenerateOTPCommand() {Username = dto.Username });
     }
 
+    /// <summary>
+    /// Validate OTP
+    /// </summary>
+    /// <returns>Status code</returns>
+    /// <response code="200">Success</response> 
+    /// <response code="400">Bad request: Failed to valid request body</response>
+    /// <response code="406">Bussiness reason with message</response>
+    [SwaggerRequestExample(typeof(ValidateOTPForgotPasswordDto), typeof(ValidateOTPForgotPasswordDtoExample))]
     [HttpPost("validate-otp-forgot-password")]
     [AllowAnonymous]
     [IgnoreAntiforgeryToken]
@@ -78,6 +125,14 @@ namespace AsrTool.Controllers
       await Mediator.Send(new ValidateForgotPasswordCommand() {Request = dto });
     }
 
+    /// <summary>
+    /// Forgot password change password command
+    /// </summary>
+    /// <returns>Status code</returns>
+    /// <response code="200">Success</response> 
+    /// <response code="400">Bad request: Failed to valid request body</response>
+    /// <response code="406">Bussiness reason with message</response>
+    [SwaggerRequestExample(typeof(ForgotPasswordDto), typeof(ForgotPasswordDtoExample))]
     [HttpPost("forgot-password")]
     [AllowAnonymous]
     [IgnoreAntiforgeryToken]

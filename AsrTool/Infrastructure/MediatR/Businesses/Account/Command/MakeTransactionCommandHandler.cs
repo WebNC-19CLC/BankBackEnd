@@ -17,11 +17,13 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
   {
     private readonly IAsrContext _asrContext;
     private readonly IUserResolver _userResolver;
+    private readonly IMediator _mediator;
 
-    public MakeTransactionCommandHandler(IAsrContext asrContext, IUserResolver userResolver)
+    public MakeTransactionCommandHandler(IAsrContext asrContext, IUserResolver userResolver, IMediator mediator)
     {
       _asrContext = asrContext;
       _userResolver = userResolver;
+      _mediator = mediator;
     }
 
     public async Task<Unit> Handle(MakeTransactionCommand request, CancellationToken cancellationToken)
@@ -32,10 +34,11 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
       {
         throw new NotFoundException();
       }
-      if(request.MakeTransactionDto.Type == "Charge")
+      if (request.MakeTransactionDto.Type == "Charge")
       {
         var to = await _asrContext.Get<Domain.Entities.BankAccount>().SingleOrDefaultAsync(x => x.AccountNumber == request.MakeTransactionDto.ToAccountNumber);
         to.Balance = to.Balance + request.MakeTransactionDto.Amount;
+
         await _asrContext.UpdateAsync(to);
 
         var trans = new Transaction
@@ -51,11 +54,25 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
           TransactionFee = Constants.Fee.TransactionFee,
         };
 
-        await _asrContext.UpdateAsync(to); 
-
         await _asrContext.AddRangeAsync(trans);
 
         await _asrContext.SaveChangesAsync();
+
+        var transaction = await _asrContext.Get<Transaction>().Include(x => x.To).ThenInclude(x => x.User).Include(x => x.From).ThenInclude(x => x.User)
+          .SingleOrDefaultAsync(x => x.Id == trans.Id);
+
+        if (transaction.Type == "Charge")
+        {
+          await _mediator.Send(new MakeNotificationCommand()
+          {
+            Request = new MakeNotificationDto
+            {
+              AccountId = transaction.To.Id,
+              Description = $"You have been recharged money with the amount of money for {transaction.Amount}",
+              Type = "Transaction",
+            }
+          });
+        }
       }
       else if (request.MakeTransactionDto.BankId == null)
       {
@@ -99,6 +116,22 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
         await _asrContext.AddRangeAsync(trans);
 
         await _asrContext.SaveChangesAsync();
+
+        var transaction = await _asrContext.Get<Transaction>().Include(x => x.To).ThenInclude(x => x.User).Include(x => x.From).ThenInclude(x => x.User)
+        .SingleOrDefaultAsync(x => x.Id == trans.Id);
+
+        if (transaction.Type == "Transaction")
+        {
+          await _mediator.Send(new MakeNotificationCommand()
+          {
+            Request = new MakeNotificationDto
+            {
+              AccountId = transaction.To.Id,
+              Description = $"User {transaction.From.User.FullName} have sent you the amount of money for {transaction.Amount} with description: {transaction.Amount}",
+              Type = trans.Type,
+            }
+          });
+        }
       }
       else if (request.MakeTransactionDto.BankId != null)
       {
@@ -126,7 +159,8 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
           FromId = from.Id,
           FromAccountNumber = from.AccountNumber,
           ToAccountNumber = request.MakeTransactionDto.ToAccountNumber,
-          BankSourceId = bank.Id,
+          BankSourceId = null,
+          BankDestinationId = bank.Id,
           ToId = null,
           Amount = request.MakeTransactionDto.Amount,
           Type = request.MakeTransactionDto.Type,

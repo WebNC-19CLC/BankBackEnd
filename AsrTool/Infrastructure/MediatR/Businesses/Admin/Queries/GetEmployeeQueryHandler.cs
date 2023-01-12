@@ -24,11 +24,15 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Admin.Queries
 
       return await employees.Select(x => new EmployeeDto
       {
+        Username = x.Username,
         Id = x.Id,
         Address = x.Site,
         IsActive = x.Active,
         Email = x.Email,
-        FullName = x.FullName,
+        FirstName = x.FullName,
+        LastName = x.LastName,
+        IndentityNumber = x.IdentityNumber,
+        Phone = x.Phone,
         Role = x.Role.Name
       }).ToListAsync();
     }

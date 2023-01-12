@@ -8,7 +8,7 @@ using AsrTool.Infrastructure.Helpers;
 
 namespace AsrTool.Infrastructure.MediatR.Businesses.Bank.Command
 {
-    public class CreateBankCommandHandle : IRequestHandler<CreateBankCommand, BankDto>
+    public class CreateBankCommandHandle : IRequestHandler<CreateBankCommand, CreateBankDto>
     {
         private readonly IAsrContext _asrContext;
 
@@ -17,7 +17,7 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Bank.Command
             _asrContext = asrContext;
         }
 
-        public async Task<BankDto> Handle(CreateBankCommand request, CancellationToken cancellationToken)
+        public async Task<CreateBankDto> Handle(CreateBankCommand request, CancellationToken cancellationToken)
         {
             var isBankExist = await _asrContext.Get<Domain.Entities.Bank>().AnyAsync(x => x.Name == request.Request.Name);
             if(isBankExist)
@@ -33,18 +33,19 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Bank.Command
             var newBank = new Domain.Entities.Bank
             {
                 Name = request.Request.Name,
-                API = request.Request.API,
+                API = "unsed",
                 DecryptPublicKey = EncryptionHelper.ConvertRSAKeyToString(pubKey),
                 DecryptRsaPrivateKey = EncryptionHelper.ConvertRSAKeyToString(privKey),
-                EncryptRsaPublicKey = "",
+                EncryptRsaPublicKey = request.Request.HashAndAsymmetricEncryptionKey,
             };
 
             await _asrContext.AddAsync(newBank);
             await _asrContext.SaveChangesAsync();
 
-            return new BankDto
+            return new CreateBankDto
             {
-                Name = newBank.Name
+                Name = newBank.Name,
+                HashAndAsymmetricEncryptionKey = newBank.DecryptPublicKey,
             };
         }
     }
