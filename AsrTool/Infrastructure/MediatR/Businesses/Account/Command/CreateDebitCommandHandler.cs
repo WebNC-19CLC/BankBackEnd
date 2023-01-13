@@ -83,9 +83,9 @@ namespace AsrTool.Infrastructure.MediatR.Businesses.Account.Command
         .SingleOrDefaultAsync(x => x.Id == debit.Id);
 
       if (request.Request.SelfInDebt)
-        await _mediator.Send(new MakeNotificationCommand() { Request = new MakeNotificationDto { Description = $"{Debter} are in debt of you for {debit.Amount}. Decription: {debit.Description}", AccountId = (int)toId } });
+        await _mediator.Send(new MakeNotificationCommand() { Request = new MakeNotificationDto { Description = $"{Debter} are in debt of you for {debit.Amount}. Decription: {debit.Description}", AccountId = (int)toId, Type = "Debit" } });
       else
-        await _mediator.Send(new MakeNotificationCommand() { Request = new MakeNotificationDto { Description = $"You are in debt of {Owner} for {debit.Amount}.  Decription: {debit.Description}", AccountId = (int)fromId } });
+        await _mediator.Send(new MakeNotificationCommand() { Request = new MakeNotificationDto { Description = $"You are in debt of {Owner} for {debit.Amount}.  Decription: {debit.Description}", AccountId = (int)fromId, Type = "Debit" } });
 
       return new DebitDto
       {
