@@ -1,6 +1,7 @@
 ﻿using AsrTool.Infrastructure.Domain.Entities;
 using AsrTool.Infrastructure.Domain.Enums;
 using AsrTool.Infrastructure.Extensions;
+using BC =  BCrypt.Net.BCrypt;
 
 namespace AsrTool.Infrastructure.Context.Seeders.Imp
 {
@@ -19,7 +20,7 @@ namespace AsrTool.Infrastructure.Context.Seeders.Imp
         LastName = Constants.Seeder.Employee.AKO.LASTNAME,
         Role = adminRole,
         Gender = Gender.Male,
-        Password = "admin",
+        Password = BC.HashPassword("admin"),
         Visa = Constants.Seeder.Employee.AKO.VISA,
         AdDomain = Constants.Seeder.Employee.AD_DOMAIN,
         OrganizationUnit = Constants.Seeder.Employee.AKO.ORGANIZATION_UNIT,
@@ -39,7 +40,7 @@ namespace AsrTool.Infrastructure.Context.Seeders.Imp
         LastName = Constants.Seeder.Employee.MPT.LASTNAME,
         Role = adminRole,
         Gender = Gender.Male,
-        Password = "admin",
+        Password = BC.HashPassword("admin"),
         Visa = Constants.Seeder.Employee.MPT.VISA,
         AdDomain = Constants.Seeder.Employee.AD_DOMAIN,
         OrganizationUnit = Constants.Seeder.Employee.MPT.ORGANIZATION_UNIT,
@@ -58,7 +59,7 @@ namespace AsrTool.Infrastructure.Context.Seeders.Imp
         FirstName = Constants.Seeder.Employee.TYI.FIRSTNAME,
         LastName = Constants.Seeder.Employee.TYI.LASTNAME,
         Role = adminRole,
-        Password = "admin",
+        Password = BC.HashPassword("admin"),
         Gender = Gender.Male,
         Visa = Constants.Seeder.Employee.TYI.VISA,
         AdDomain = Constants.Seeder.Employee.AD_DOMAIN,
@@ -78,7 +79,7 @@ namespace AsrTool.Infrastructure.Context.Seeders.Imp
         FirstName = Constants.Seeder.Employee.KAL.FIRSTNAME,
         LastName = Constants.Seeder.Employee.KAL.LASTNAME,
         Role = adminRole,
-        Password = "admin",
+        Password = BC.HashPassword("admin"),
         Gender = Gender.Female,
         Visa = Constants.Seeder.Employee.KAL.VISA,
         AdDomain = Constants.Seeder.Employee.AD_DOMAIN,
@@ -99,7 +100,7 @@ namespace AsrTool.Infrastructure.Context.Seeders.Imp
         LastName = Constants.Seeder.Employee.ADT.LASTNAME,
         Role = adminRole,
         Gender = Gender.Female,
-        Password = "admin",
+        Password = BC.HashPassword("admin"),
         Visa = Constants.Seeder.Employee.ADT.VISA,
         AdDomain = Constants.Seeder.Employee.AD_DOMAIN,
         OrganizationUnit = Constants.Seeder.Employee.ADT.ORGANIZATION_UNIT,
@@ -119,7 +120,7 @@ namespace AsrTool.Infrastructure.Context.Seeders.Imp
         LastName = Constants.Seeder.Employee.VNH.LASTNAME,
         Role = adminRole,
         Gender = Gender.Male,
-        Password = "admin",
+        Password = BC.HashPassword("admin"),
         Visa = Constants.Seeder.Employee.VNH.VISA,
         AdDomain = Constants.Seeder.Employee.AD_DOMAIN,
         OrganizationUnit = Constants.Seeder.Employee.VNH.ORGANIZATION_UNIT,
